@@ -10,12 +10,12 @@ namespace Nero
     public List<Nero.Datum> data { get; set; }
     public double best_persecondamount { get; set; }
     public int best_duration { get; set; }
-    public int best_historical_percent { get; set; }
+    public double best_historical_percent { get; set; }
     public double best_allstar_points { get; set; }
-    public int best_combined_allstar_points { get; set; }
-    public int possible_allstar_points { get; set; }
-    public int historical_total { get; set; }
-    public int historical_median { get; set; }
+    public double best_combined_allstar_points { get; set; }
+    public double possible_allstar_points { get; set; }
+    public double historical_total { get; set; }
+    public double historical_median { get; set; }
     public double historical_avg { get; set; }
 }
 }

@@ -15,7 +15,7 @@ namespace Nero
 {
 
     public class fflogs : ModuleBase {
-
+        
         public Dictionary<string, ulong> GetRoles() {
             var roles = new Dictionary<string, ulong>();
             foreach(var role in Context.Guild.Roles) {
@@ -26,6 +26,104 @@ namespace Nero
             }
             return roles;
         }
+
+        public async Task AddRoleAsync(Dictionary<string, ulong> roles, string name, Task<IGuildUser> user) {
+            if (!roles.ContainsKey(name.ToLower())) {
+                await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {name} does not exist yet, please create it.");
+            }
+            else {
+                if (user.Result.RoleIds.Contains(roles[name.ToLower()]) == false)
+                await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[name.ToLower()]));
+            }
+        }
+
+        
+        public async Task AssignRolesAsync(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
+            var clearedFights = _player.GetClearedFights();
+            
+            if (clearedFights.Count == 0) {
+                    await ReplyAsync("This player has not cleared any extreme/savage fights");
+            }
+
+                // Susano Role
+            if (clearedFights.Contains("Susano") && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
+                await AddRoleAsync(roles, "cleared-susano-ex", user);
+            Console.WriteLine("Susano added");
+
+                // Lakshmi Role
+            if (clearedFights.Contains("Lakshmi") && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
+            {
+                await AddRoleAsync(roles, "cleared-lakshmi-ex", user);
+                Console.WriteLine("Lakshmi added");
+            }
+
+            // top 5%
+            if (_player.bestPercent >= 95.0 && _player.fightsCleared == 2) // magic number lol
+            {
+                await AddRoleAsync(roles, "bigdps-ex", user);
+                Console.WriteLine($"bigdps-ex added");
+            }
+
+            // World Role
+            if (!roles.ContainsKey(_player.world.ToLower())) {
+                await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.world.ToLower()} does not exist yet, please create it.");
+            }
+            else
+            {
+                if (user.Result.RoleIds.Contains(roles[_player.world.ToLower()]) == false)
+                    //await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[world.Name.ToLower()]));
+                    await AddRoleAsync(roles, _player.world, user);
+            }
+
+            // DC Role
+            if (!roles.ContainsKey(_player.dc.ToLower()))
+            {
+                await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.dc} does not exist yet, please create it.");
+            }
+            else
+            {
+                if (user.Result.RoleIds.Contains(roles[_player.dc.ToLower()]) == false)
+                    //await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[world.DC.ToLower()]));
+                    await AddRoleAsync(roles, _player.dc, user);
+            }
+
+            if (_player.jobs.Count == 0)
+            {
+                await ReplyAsync("No recorded Parses");
+                return;
+            }
+            else
+            {
+                foreach (var classjob in _player.jobs)
+                {
+
+                    // Job role
+                    if (!roles.ContainsKey(classjob.name.ToLower()))
+                    {
+                        await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.name} does not exist yet, please create it.");
+                    }
+                    else
+                    {
+                        if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
+                            await AddRoleAsync(roles, classjob.name, user);
+                    }
+
+                    //Role role
+                    if (!roles.ContainsKey(classjob.role.ToLower()))
+                    {
+                        await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.role} does not exist yet, please create it.");
+                    }
+                    else
+                    {
+                        if (user.Result.RoleIds.Contains(roles[classjob.role.ToLower()]) == false)
+                            await AddRoleAsync(roles, classjob.role, user);
+                    }
+
+                }
+            }
+            Console.WriteLine($"total: {_player.bestPercent}%, {_player.bestDps}");
+        }
+        
 
         [Command("assign")]
         [Alias("a")]
@@ -40,169 +138,53 @@ namespace Nero
             var worldResult = from wrld in worlds
                               where wrld.Name.ToLower().Contains(server.ToLower())
                               select wrld;
-            //7bd977bcb89a89934dc26a137b6d2b24
             var world = worldResult.First();
             var url = new Uri($"https://www.fflogs.com/v1/parses/character/{character}/{world.Name}/{world.Region}/?api_key={Configuration.Load().FFLogsKey}");
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            bool cleared_susano = false;
-            double best_susano_dps = 0;
-            double best_susano_percent = 0;
-            bool cleared_lakshmi = false;
-            double best_lakshmi_dps = 0;
-            double best_lakshmi_percent = 0;
-            bool big_dps = false;
-            double best_historical_perc = 0.0;
+            var player = new Player(character, world.DC, world.Name);
 
             try
             {
                 string responseBody = await client.GetStringAsync(url);
                 var parses = JsonConvert.DeserializeObject<List<Nero.RootObject>>(responseBody);
-                string reply = "";
                 var user = Context.Guild.GetUserAsync(Context.User.Id);
 
-                //TODO: Fights object
+                double bestPercent = 0.0;
+                double bestDps = 0.0;
+
                 foreach (var parse in parses)
                 {
-                    //Susano
-                    if (parse.name == "Susano" && parse.kill > 0)
-                    {
-                        cleared_susano = true;
-
-                        foreach (var spec in parse.specs)
-                        {
-                            jobslist.Add(new Nero.job(spec.spec, spec.best_historical_percent));
-
-                            if (spec.best_persecondamount >= best_susano_dps)
-                            {
-                                best_susano_dps = spec.best_persecondamount;
-                            }
-                            if (spec.best_historical_percent >= best_susano_percent)
-                            {
-                                best_susano_percent = spec.best_historical_percent;
-                            }
-                        }
+                    bool cleared = false;
+                    int specAmount = 0;
+                    if (parse.kill > 0) {
+                        cleared = true;
                     }
-                    //Lakshmi
-                    if (parse.name == "Lakshmi" && parse.kill > 0)
-                    {
-                        cleared_lakshmi = true;
+                    List<job> specs = new List<job>();
 
-                        foreach (var spec in parse.specs)
-                        {
-                            jobslist.Add(new Nero.job(spec.spec, spec.best_historical_percent));
+                    foreach(var spec in parse.specs) {
+                        specs.Add(new job(spec.spec, spec.best_historical_percent));
+                        if (spec.best_persecondamount >= bestDps)
+                            bestDps = spec.best_persecondamount;
+                        
+                        if (spec.best_historical_percent >= bestPercent)
+                            bestPercent = spec.best_historical_percent;
 
-                            if (spec.best_persecondamount >= best_lakshmi_dps)
-                            {
-                                best_lakshmi_dps = spec.best_persecondamount;
-                            }
-                            if (spec.best_historical_percent >= best_lakshmi_percent)
-                            {
-                                best_lakshmi_percent = spec.best_historical_percent;
-
-                            }
-                        }
+                        specAmount++;
                     }
-                    //Future
+                    player.AddFight(cleared, parse.kill, specAmount, specs, parse.name, bestDps, bestPercent);
+                    
                 }
+                    await AssignRolesAsync(roles, user, player);
 
-                if (cleared_lakshmi == false && cleared_susano == false)
-                {
-                    reply += "This user has not cleared any extreme/savage content.";
-                }
-
-                // Susano Role
-                if (cleared_susano == true && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
-                    await user.Result.AddRoleAsync(Context.Guild.GetRole(roles["cleared-susano-ex"]));
-                Console.WriteLine("Susano added");
-
-                // Lakshmi Role
-                if (cleared_lakshmi == true && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
-                {
-                    await user.Result.AddRoleAsync(Context.Guild.GetRole(roles["cleared-lakshmi-ex"]));
-                    Console.WriteLine("Lakshmi added");
-                }
-
-                //BigDPS Role
-                if (cleared_lakshmi == true && cleared_susano == true)
-                {
-                    big_dps = true;
-                    best_historical_perc = (best_lakshmi_percent + best_susano_percent) / 2.0;
-                }
-
-                // top 5%
-                if (best_historical_perc >= 95.0)
-                {
-                    await user.Result.AddRoleAsync(Context.Guild.GetRole(roles["bigdps-ex"]));
-                }
-
-                // World Role
-                if (!roles.ContainsKey(world.Name.ToLower()))
-                {
-                    await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {world.Name} does not exist yet, please create it.");
-                }
-                else
-                {
-                    if (user.Result.RoleIds.Contains(roles[world.Name.ToLower()]) == false)
-                        await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[world.Name.ToLower()]));
-                }
-
-                // DC Role
-                if (!roles.ContainsKey(world.DC.ToLower()))
-                {
-                    await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {world.DC} does not exist yet, please create it.");
-                }
-                else
-                {
-                    if (user.Result.RoleIds.Contains(roles[world.DC.ToLower()]) == false)
-                        await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[world.DC.ToLower()]));
-                }
-
-                if (jobslist.Count == 0)
-                {
-                    await msg.ModifyAsync(x =>
-                    {
-                        x.Content = "No parses found";
-                    });
-                    return;
-                }
-                else
-                {
-                    foreach (var classjob in jobslist)
-                    {
-
-                        // Job role
-                        if (!roles.ContainsKey(classjob.name.ToLower()))
-                        {
-                            await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.name} does not exist yet, please create it.");
-                        }
-                        else
-                        {
-                            if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
-                                await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[classjob.name.ToLower()]));
-                        }
-
-                        //Role role
-                        if (!roles.ContainsKey(classjob.role.ToLower()))
-                        {
-                            await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.role} does not exist yet, please create it.");
-                        }
-                        else
-                        {
-                            if (user.Result.RoleIds.Contains(roles[classjob.role.ToLower()]) == false)
-                                await user.Result.AddRoleAsync(Context.Guild.GetRole(roles[classjob.role.ToLower()]));
-                        }
-
-                    }
-                }
 
                 await msg.ModifyAsync(x =>
                 {
                     x.Content = "Roles Updated";
                 });
-                Console.WriteLine($"susano % {best_susano_percent}, lakshmi % {best_lakshmi_percent}, total: {best_historical_perc}");
+                
 
             }
             catch (HttpRequestException e)

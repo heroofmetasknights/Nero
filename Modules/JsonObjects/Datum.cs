@@ -17,7 +17,7 @@ namespace Nero
         public double percent { get; set; }
         public int exploit { get; set; }
         public bool banned { get; set; }
-        public int historical_count { get; set; }
-        public int historical_percent { get; set; }
+        public double historical_count { get; set; }
+        public double historical_percent { get; set; }
     }
 }
