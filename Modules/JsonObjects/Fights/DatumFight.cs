@@ -1,7 +1,7 @@
 namespace Nero
 {
 
-    public class Datum {
+    public class DatumFight {
         public int character_id { get; set; }
         public string character_name { get; set; }
         public double persecondamount { get; set; }

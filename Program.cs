@@ -4,6 +4,7 @@ using System.IO;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Addons.Paginator;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Nero
@@ -41,8 +42,8 @@ namespace Nero
 
         public IServiceProvider ConfigureServices(){
             var services = new ServiceCollection()
-                .AddSingleton(_client);
-                //.AddPaginator(_client, Log);
+                .AddSingleton(_client)
+                .AddPaginator(_client, Log);
             return services.BuildServiceProvider();
         }
 

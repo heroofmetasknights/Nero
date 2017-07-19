@@ -7,10 +7,12 @@ namespace Nero
         public string role;
         public string subrole;
         public double historical_percent;
+        public double historical_dps;
 
-        public job (string _fflogs_name, double _percent) {
+        public job (string _fflogs_name, double _percent, double _dps) {
             fflogs_name = _fflogs_name;
             historical_percent = _percent;
+            historical_dps = _dps;
 
             if (fflogs_name == "BlackMage") {
                 name = "Black-Mage";
