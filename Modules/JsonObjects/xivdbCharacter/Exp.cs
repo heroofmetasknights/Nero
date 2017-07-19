@@ -6,7 +6,7 @@ namespace XivDB {
         public int total_gained { get; set; }
         public int total_max { get; set; }
         public int total_togo { get; set; }
-        public float percent { get; set; }
+        public double percent { get; set; }
         public float total_percent { get; set; }
     }
 }

@@ -207,6 +207,7 @@ namespace Nero
             Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Context.User.Id)}");
             if (!Player.DoesProfileExist(Context.User.Id)) {
                 await ReplyAsync("Profile does not exist, please run the following command.\n!n assign `server` `character name`");
+                return;
             }
             var player = Player.Load(Context.User.Id);
             await GetParse(player.world, player.playerName);
