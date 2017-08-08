@@ -23,7 +23,9 @@ namespace Manderville.Modules {
         public async Task HelpAsync() {
             var application = await Context.Client.GetApplicationInfoAsync();
             string reply = $"__**Available Commands**__\n" +
-                $"**a**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n\n" +
+                $"**a**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" + 
+                $"**v**iew: Views a users profile\n" + 
+                $"**v**iew `@mention`: view a discord users profile\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to: " +
                 $"{application.Owner.Mention} ";
