@@ -25,6 +25,8 @@ namespace Nero {
         public string xivdbURL;
         public string xivdbURL_API;
 
+        public double[] fight_dps;
+
         public Player(ulong _discordID, string _playerName, string _dc, string _world) {
             discordID = _discordID;
             playerName = _playerName;
@@ -41,6 +43,7 @@ namespace Nero {
             fightsCleared = 0;
             xivdbURL = "";
             xivdbURL_API = "";
+            fight_dps = new double[12];
             this.EnsureExists();
         }
 
@@ -99,6 +102,7 @@ namespace Nero {
         }
 
         public string GetTopThreeDPS(Fight fight, ICommandContext context) {
+            Console.WriteLine(fight.fightName);
             var emoteResults =  from emo in context.Guild.Emotes
                                 where emo.Name.ToLower().Contains("ast") || emo.Name.ToLower().Contains("blm") || emo.Name.ToLower().Contains("brd") ||
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||
@@ -111,28 +115,25 @@ namespace Nero {
 
             if (emoteResults.Count() > 0) {
                 var jobsSortedResults = (from job in fight.jobs
-                                        orderby job.historical_dps
+                                        orderby job.dps
                                         select job).Take(3);
 
                 if (jobsSortedResults.Count() > 0) {
                     foreach (var job in jobsSortedResults) {
                         foreach (var emote in emoteResults) {
                             if (job.short_name == emote.Name) {
-                                reply += $"{emote.ToString()}: {job.historical_dps} ";
+                                reply += $"{emote.ToString()}: {job.dps} ";
+                                Console.WriteLine(reply);
                             }
                         }
                     }
                 }
                 
-
+                jobsSortedResults = null;
             } else {
 
             }
 
-
-            //foreach (var emote in emoteResults) {
-            //    Console.WriteLine($"{emote.Name}: {emote.Id} - {emote.Url} - {emote.ToString()}");
-            //}
 
             return reply;
         }
@@ -161,7 +162,7 @@ namespace Nero {
                         }
                     }
                     } else {
-                        foreach (var jb in jobs) {
+                        foreach (var jb in this.jobs) {
                             if (jb.name == job.name && jb.historical_percent <= job.historical_percent) {
                                 jb.historical_percent = job.historical_percent;
                             }
@@ -181,8 +182,6 @@ namespace Nero {
                         case "Alte Roite":
                             clearedFightsList.Add($"O1S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O1S");
-                            
-
                             break;
                         case "Catastrophe":
                             clearedFightsList.Add($"O2S {this.GetTopThreeDPS(fight, context)}");

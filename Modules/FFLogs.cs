@@ -88,7 +88,7 @@ namespace Nero
             // Savage
             for (int i = 1; i<=savageFightCount;i++) {
                 if(!roles.ContainsKey($"cleared-o{i}s")){
-                    Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: cleared-o{i}s does not exist yet, please create it.");
+                    Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"]).Mention} role: cleared-o{i}s does not exist yet, please create it.");
                 } else {
                     if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
                         Console.WriteLine($"Adding Role: Cleared-O{i}S");
@@ -155,8 +155,14 @@ namespace Nero
                 }
             }
 
+            ulong ffxivrecruiterID = 142476055482073089;
+            ulong testhouseID = 286211518691934210;
+
             if (rolesToAdd.Count > 0) {
-                await user.Result.AddRolesAsync(rolesToAdd);
+                if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID) {
+                    await user.Result.AddRolesAsync(rolesToAdd);
+                }
+                
             }
         }
 
@@ -166,7 +172,7 @@ namespace Nero
         public async Task assign(string server, [Remainder] string character) {
             var msg = await ReplyAsync("Working...");
 
-            await GetParse(server, character, Context.User.Id);
+            await GetParse(server, character, Context.User.Id, true);
 
             await msg.ModifyAsync(x =>
                 {
@@ -174,8 +180,7 @@ namespace Nero
                 });
         }
 
-        public async Task GetParse(string server, [Remainder] string character, ulong userID)
-        {
+        public async Task GetParse(string server, [Remainder] string character, ulong userID, bool update) {
             Console.WriteLine("\n ");
             var roles = GetRoles();
             var user = Context.Guild.GetUserAsync(Context.User.Id);
@@ -212,7 +217,7 @@ namespace Nero
                     List<job> specs = new List<job>();
 
                     foreach(var spec in parse.specs) {
-                        Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}");
+                        Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
                             bestDps = spec.best_persecondamount;
@@ -229,8 +234,13 @@ namespace Nero
                     bestDps = 0.0;
                     
                 }
-                    await AssignRolesAsync(roles, user, player);
 
+                ulong ffxivrecruiterID = 142476055482073089;
+                ulong testhouseID = 286211518691934210;
+
+                if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID && update == true) {
+                    await AssignRolesAsync(roles, user, player);
+                }
                 
 
             }
@@ -247,25 +257,25 @@ namespace Nero
         [Command("view")]
         [Alias("v")]
         public async Task ViewProfile() {
-            await UpdateProfile(Context.User);
-           await SendProfile(Context.User);
+            await UpdateProfile(Context.User, true);
+            await SendProfile(Context.User);
         }
 
 
         [Command("view")]
         [Alias("v")]
         public async Task TaskViewUserProfile(IUser serverUser) {
-            await UpdateProfile(serverUser);
+            await UpdateProfile(serverUser, false);
             Console.WriteLine($"user: {serverUser.Username} - {serverUser.Id}");
             await SendProfile(serverUser);
         }
 
         [Command("update")]
         [Alias("u")]
-        public async Task UpdateProfile(IUser serverUser) {
+        public async Task UpdateProfile(IUser serverUser, bool update) {
             Console.WriteLine($"mention update| Name: {serverUser.Username} ID: {serverUser.Id}");
             var player = Player.Load(serverUser.Id);
-            await GetParse(player.world, player.playerName, serverUser.Id);
+            await GetParse(player.world, player.playerName, serverUser.Id, update);
         }
 
         public async Task SendProfile(IUser User) {
@@ -279,11 +289,19 @@ namespace Nero
 
             if (player.xivdbURL == "" || player.xivdbURL.Length == 0 || player.xivdbURL == null) {
                 player.xivdbURL = GetXivDB(player.playerName, player.world, false).Result.ToString();
-            }
+                if (player.xivdbURL == "!@invalid") {
+                    await ReplyAsync("Character page not found at XIVDB");
+                    return;
+                }
+            } 
 
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
-            }
+                if (player.xivdbURL_API == "!@invalid") {
+                    await ReplyAsync("Character API URL not found at XIVDB");
+                    return;
+                }
+            } 
 
             Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
 
@@ -303,9 +321,9 @@ namespace Nero
 
 
             try {
-                foreach (var job in xivdbCharacter.data.classjobs.class_jobs) {
+                //foreach (var job in xivdbCharacter.data.classjobs.class_jobs) {
                     //jobs += $"{job.name} - {job.level}";
-                }
+                //}
             } catch {
                 Console.WriteLine($"classjobs is null: {xivdbCharacter.data.classjobs.class_jobs == null}");
             }
@@ -357,12 +375,22 @@ namespace Nero
             where charResult.name.ToLower() == name.ToLower() && charResult.server == world
             select charResult;
 
-            var playerLink = results.First().url_api;
+            string playerLink = "";
+            
+            if (results.Count() > 0) {
+                playerLink = results.First().url_api;
+            } else {
+                return "!@invalid";
+            }
 
             return playerLink;
             } else {
                 var url = new Uri($"https://api.xivdb.com/search?one=characters&string={name}&pretty=1");
+                //https://api.xivdb.com/search?one=characters&string=knightin_Rustyarmour&pretty=1
             var client = HTTPHelpers.NewClient();
+
+            //http://api.xivdb.com/character/6248857/knightin+rustyarmour/excalibur
+
 
             string responseBody = await client.GetStringAsync(url);         
             var xivdbCharacters = JsonConvert.DeserializeObject<CharacterSearch>(responseBody);
@@ -371,7 +399,13 @@ namespace Nero
             where charResult.name.ToLower() == name.ToLower() && charResult.server == world
             select charResult;
 
-            var playerLink = results.First().url_xivdb;
+            string playerLink = "";
+
+            if (results.Count() > 0) {
+                playerLink = results.First().url_xivdb;
+            } else {
+                return "!@invalid";
+            }
 
             return playerLink;
             }
