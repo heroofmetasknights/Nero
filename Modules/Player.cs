@@ -18,6 +18,7 @@ namespace Nero {
         public List<job> jobs;
         public List<string> cleared;
         public double bestPercent;
+        public double bestfightPercent = 0.0;
         public double bestSavagePercent;
         public double bestSavageDps;
         public double bestDps;
@@ -38,6 +39,7 @@ namespace Nero {
             world = _world;
             bestPercent = 0.0;
             bestDps = 0.0;
+            bestfightPercent = 0.0;
             bestSavageDps = 0.0;
             bestSavagePercent = 0.0;
             fightsCleared = 0;
@@ -94,7 +96,7 @@ namespace Nero {
 
             
             if (fightsCleared > 0) {
-                this.bestPercent /= fightsCleared;        
+                this.bestPercent /= (fightsCleared - 1); // minus exdeath  
             } else {
                 this.bestPercent = 0.0;
             }
@@ -102,7 +104,7 @@ namespace Nero {
         }
 
         public string GetTopThreeDPS(Fight fight, ICommandContext context) {
-            Console.WriteLine(fight.fightName);
+            //Console.WriteLine(fight.fightName);
             var emoteResults =  from emo in context.Guild.Emotes
                                 where emo.Name.ToLower().Contains("ast") || emo.Name.ToLower().Contains("blm") || emo.Name.ToLower().Contains("brd") ||
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||
@@ -122,8 +124,8 @@ namespace Nero {
                     foreach (var job in jobsSortedResults) {
                         foreach (var emote in emoteResults) {
                             if (job.short_name == emote.Name) {
-                                reply += $"{emote.ToString()}: {job.dps} ";
-                                Console.WriteLine(reply);
+                                reply += $"{emote.ToString()} {Math.Floor(job.dps)}% ";
+                                //Console.WriteLine(reply);
                             }
                         }
                     }
@@ -131,12 +133,100 @@ namespace Nero {
                 
                 jobsSortedResults = null;
             } else {
+                var jobsSortedResults = (from job in fight.jobs
+                                        orderby job.dps
+                                        select job).Take(3);
 
+                if (jobsSortedResults.Count() > 0) {
+                    foreach (var job in jobsSortedResults) {
+                        
+                            
+                        reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
+                        //Console.WriteLine(reply);
+                            
+                        
+                    }
+                }
             }
 
 
             return reply;
         }
+
+
+public List<string> GetClearedFights(){
+            var clearedFightsList = new List<string>();
+            fightsCleared = 0;
+            var jobnames = new List<string>();
+
+            foreach (Fight fight in fights) {
+
+                foreach (var job in fight.jobs) {
+                    foreach(var j in jobs) {
+                        if (j.name == job.name) {
+                            j.savageP += job.historical_percent;
+                        }
+                    }
+                    
+                    if (jobnames.Contains(job.name) == false) {
+                        jobnames.Add(job.name);
+                        jobs.Add(job);
+
+                    foreach(var j in jobs) {
+                        if (j.name == job.name) {
+                            j.savageP += job.historical_percent;
+                        }
+                    }
+                    } else {
+                        foreach (var jb in this.jobs) {
+                            if (jb.name == job.name && jb.historical_percent <= job.historical_percent) {
+                                jb.historical_percent = job.historical_percent;
+                            }
+                            if (jb.name == job.name && jb.historical_dps <= job.historical_dps) {
+                                jb.historical_dps = job.historical_dps;
+                            }
+
+                            
+                        }
+                    }
+                    
+                }
+            
+            if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
+                    switch (fight.fightName)
+                    {
+                        case "Alte Roite":
+                            clearedFightsList.Add($"O1S");
+                            cleared.Add("O1S");
+                            break;
+                        case "Catastrophe":
+                            clearedFightsList.Add($"O2S");
+                            cleared.Add("O2S");
+                            break;
+                        case "Halicarnassus":
+                            clearedFightsList.Add($"O3S");
+                            cleared.Add("O3S");
+                            break;
+                        case "Exdeath":
+                            break;
+                        case "Neo Exdeath":
+                            clearedFightsList.Add($"O4S");
+                            cleared.Add("O4S");
+                            break;
+                        default:
+                            cleared.Add(fight.fightName);
+                            break;
+                    }
+
+                    fightsCleared++;
+                }
+
+            }
+            this.CalculateBest();
+            this.EnsureExists();
+            return clearedFightsList;
+        }
+
 
         public List<string> GetClearedFights(ICommandContext context){
             var clearedFightsList = new List<string>();

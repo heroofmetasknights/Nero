@@ -16,7 +16,7 @@ namespace Nero
             fflogs_name = _fflogs_name;
             historical_percent = _percent;
             historical_dps = _dps;
-            dps = _dps;
+            dps = _percent;
             savageP = 0.0;
 
             if (fflogs_name == "BlackMage") {

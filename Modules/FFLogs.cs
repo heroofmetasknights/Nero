@@ -42,7 +42,7 @@ namespace Nero
             var rolesToAdd = new List<IRole>();
             // World Role
             if (!roles.ContainsKey(_player.world.ToLower())) {
-                Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.world.ToLower()} does not exist yet, please create it.");
+                //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.world.ToLower()} does not exist yet, please create it.");
             }
             else
             {
@@ -53,7 +53,7 @@ namespace Nero
             // DC Role
             if (!roles.ContainsKey(_player.dc.ToLower()))
             {
-                Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.dc} does not exist yet, please create it.");
+                //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.dc} does not exist yet, please create it.");
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Nero
         
         public async Task AssignRolesAsync(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
             var context = Context;
-            var clearedFights = _player.GetClearedFights(context);
+            var clearedFights = _player.GetClearedFights();
             var savageJobs = _player.GetSavageJobs();
             var rolesToAdd = new List<IRole>();
             int savageFightCount = 4;
@@ -88,7 +88,7 @@ namespace Nero
             // Savage
             for (int i = 1; i<=savageFightCount;i++) {
                 if(!roles.ContainsKey($"cleared-o{i}s")){
-                    Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"]).Mention} role: cleared-o{i}s does not exist yet, please create it.");
+                    //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"]).Mention} role: cleared-o{i}s does not exist yet, please create it.");
                 } else {
                     if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
                         Console.WriteLine($"Adding Role: Cleared-O{i}S");
@@ -133,7 +133,7 @@ namespace Nero
                     // Job role
                     if (!roles.ContainsKey(classjob.name.ToLower()))
                     {
-                        Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.name} does not exist yet, please create it.");
+                        //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.name} does not exist yet, please create it.");
                     }
                     else
                     {
@@ -144,7 +144,7 @@ namespace Nero
                     //Role role
                     if (!roles.ContainsKey(classjob.role.ToLower()))
                     {
-                        Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.role} does not exist yet, please create it.");
+                        //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.role} does not exist yet, please create it.");
                     }
                     else
                     {
@@ -155,13 +155,11 @@ namespace Nero
                 }
             }
 
-            ulong ffxivrecruiterID = 142476055482073089;
-            ulong testhouseID = 286211518691934210;
+            
 
             if (rolesToAdd.Count > 0) {
-                if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID) {
+                
                     await user.Result.AddRolesAsync(rolesToAdd);
-                }
                 
             }
         }
@@ -217,7 +215,8 @@ namespace Nero
                     List<job> specs = new List<job>();
 
                     foreach(var spec in parse.specs) {
-                        Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
+                        if (parse.name != "Exdeath") {
+                            //Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
                             bestDps = spec.best_persecondamount;
@@ -228,6 +227,7 @@ namespace Nero
                         
 
                         specAmount++;
+                        }
                     }
                     player.AddFight(cleared, parse.kill, specAmount, specs, parse.name, bestDps, bestPercent);
                     bestPercent = 0.0;
@@ -235,12 +235,12 @@ namespace Nero
                     
                 }
 
-                ulong ffxivrecruiterID = 142476055482073089;
-                ulong testhouseID = 286211518691934210;
+                //ulong ffxivrecruiterID = 142476055482073089;
+                //ulong testhouseID = 286211518691934210;
 
-                if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID && update == true) {
+                //if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID) {
                     await AssignRolesAsync(roles, user, player);
-                }
+                //}
                 
 
             }
@@ -265,7 +265,6 @@ namespace Nero
         [Command("view")]
         [Alias("v")]
         public async Task TaskViewUserProfile(IUser serverUser) {
-            await UpdateProfile(serverUser, false);
             Console.WriteLine($"user: {serverUser.Username} - {serverUser.Id}");
             await SendProfile(serverUser);
         }
@@ -312,10 +311,12 @@ namespace Nero
             
             var raidJobs = "";
             foreach(var job in player.jobs) {
-                raidJobs += $" - **{job.name}**\n" + 
+                if(raidJobs.Contains(job.name) == false) {
+                    raidJobs += $" - **{job.name}**\n" + 
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best  %: {job.historical_percent}%\n" +
-                        $"    •  Savage Average %: {job.savageP}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                }
+                
             }
 
 
@@ -337,7 +338,7 @@ namespace Nero
             
 
             var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {player.bestPercent}%\n\n" + 
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
             $"__**Raid Jobs**__\n" + 
             $"{raidJobs}\n" + 
             $"__**Clears**__\n" + 
