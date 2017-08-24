@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,24 +8,33 @@ using Discord.Commands;
 
 namespace Nero {
     public class PlayerStatic {
-        public ulong discordID;
+        public ulong discordServerID;
+        public ulong creatorID;
         public string fileName;
         public string PlayerStaticName;
         public string dc;
+        public Dictionary<string, ulong> Members = new Dictionary<string, ulong>();
         public List<string> cleared;
 
+        public string InviteLink;
+
+        public Dictionary<string, ulong> Applications = new Dictionary<string, ulong>();
 
         public double[] fight_dps;
 
-        public PlayerStatic(ulong _discordID, string _PlayerStaticName, string _dc, string _world) {
-            discordID = _discordID;
+        public bool recruiting;
+
+        public List<string> Filters = new List<string>();
+
+        public PlayerStatic(ulong _discordServerID, string _PlayerStaticName, string _dc, ulong _creatorID, string _invite) {
+            discordServerID = _discordServerID;
             PlayerStaticName = _PlayerStaticName;
-            fileName = $"characters/{discordID}.json";
+            fileName = $"statics/{discordServerID}.json";
             cleared = new List<string>();
             dc = _dc;
-            
-            
-            
+            creatorID = _creatorID;
+            InviteLink = _invite;
+            recruiting = false;
             this.EnsureExists();
         }
 
@@ -53,12 +61,12 @@ namespace Nero {
         }
 
         public static PlayerStatic Load(ulong id) {
-            string file = Path.Combine(AppContext.BaseDirectory, $"characters/{id}.json");
+            string file = Path.Combine(AppContext.BaseDirectory, $"statics/{id}.json");
             return JsonConvert.DeserializeObject<PlayerStatic>(File.ReadAllText(file));
         }
 
         public static bool DoesProfileExist(ulong id) {
-            string file = Path.Combine(AppContext.BaseDirectory, $"characters/{id}.json");
+            string file = Path.Combine(AppContext.BaseDirectory, $"statics/{id}.json");
             if (!File.Exists(file)) {
                 return false;
             } else {

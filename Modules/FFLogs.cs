@@ -1,5 +1,3 @@
-//TODO : Redo xivdb character parsing to actually work
-//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +8,7 @@ using System.Net.Http.Headers;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Discord.Addons.Interactive;
 using Newtonsoft.Json;
 using Nero.Modules.Utilities;
 
@@ -170,7 +169,7 @@ namespace Nero
         public async Task assign(string server, [Remainder] string character) {
             var msg = await ReplyAsync("Working...");
 
-            await GetParse(server, character, Context.User.Id, true);
+            await GetParse(server, character, Context.User.Id);
 
             await msg.ModifyAsync(x =>
                 {
@@ -178,7 +177,19 @@ namespace Nero
                 });
         }
 
-        public async Task GetParse(string server, [Remainder] string character, ulong userID, bool update) {
+        [Command("add profile")]
+        [Alias("ap")]
+        public async Task AddProfile(string server, [Remainder] string character) {
+            var msg = await ReplyAsync("Working...");
+
+            await GetParse(server, character, Context.User.Id);
+
+            await msg.ModifyAsync(x =>{
+                x.Content = "Roles Updated";
+            });
+        }
+
+        public async Task GetParse(string server, [Remainder] string character, ulong userID) {
             Console.WriteLine("\n ");
             var roles = GetRoles();
             var user = Context.Guild.GetUserAsync(Context.User.Id);
@@ -257,39 +268,96 @@ namespace Nero
         [Command("view")]
         [Alias("v")]
         public async Task ViewProfile() {
-            await UpdateProfile(Context.User, true);
-            await SendProfile(Context.User);
+            await UpdateProfile(Context.User);
+            await SendProfile(Context.User.Id);
         }
 
 
         [Command("view")]
         [Alias("v")]
-        public async Task TaskViewUserProfile(IUser serverUser) {
+        public async Task ViewOtherUserProfile(IUser serverUser) {
             Console.WriteLine($"user: {serverUser.Username} - {serverUser.Id}");
-            await SendProfile(serverUser);
+            await SendProfile(serverUser.Id);
         }
 
         [Command("update")]
         [Alias("u")]
-        public async Task UpdateProfile(IUser serverUser, bool update) {
+        public async Task UpdateProfile(IUser serverUser) {
             Console.WriteLine($"mention update| Name: {serverUser.Username} ID: {serverUser.Id}");
             var player = Player.Load(serverUser.Id);
-            await GetParse(player.world, player.playerName, serverUser.Id, update);
+            await GetParse(player.world, player.playerName, serverUser.Id);
         }
 
-        public async Task SendProfile(IUser User) {
+
+        public async Task SendProfileNoXIVDB(ulong Id) {
             var context = Context;
-             Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(User.Id)}");
-            if (!Player.DoesProfileExist(User.Id)) {
+             Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Id)}");
+            if (!Player.DoesProfileExist(Id)) {
                 await ReplyAsync($"Profile does for user {Context.User.Username} not exist, please run the following command.\n!n assign `server` `character name`");
                 return;
             }
-            var player = Player.Load(User.Id);
+            var player = Player.Load(Id);
+            
+            var raidJobs = "";
+            foreach(var job in player.jobs) {
+                if(raidJobs.Contains(job.name) == false) {
+                    raidJobs += $" - **{job.name}**\n" + 
+                        $"    •  Historical DPS: {job.historical_dps}\n" +
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                }
+                
+            }
+
+
+
+            
+
+            var clears = "";
+
+            foreach (var clear in player.GetClearedFights(context)) {
+                clears += $" - {clear}\n";
+            }
+
+            
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" + 
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
+            $"__**Raid Jobs**__\n" + 
+            $"{raidJobs}\n" + 
+            $"__**Clears**__\n" + 
+            $"{clears}\n" + 
+            $""; //+ 
+            //$"__**Jobs**__\n" + 
+            //$"{jobs}";
+
+
+
+            var embed = new EmbedBuilder()
+            .WithTitle($"{player.playerName}")
+            .WithFooter(new EmbedFooterBuilder()
+            .WithText($"{player.dc} - {player.world}"))
+            .WithColor(new Color(102, 255, 222))
+            .WithDescription(reply)
+            .Build();
+
+
+            await ReplyAsync("", embed: embed);
+            
+        }
+
+        public async Task SendProfile(ulong Id) {
+            var context = Context;
+             Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Id)}");
+            if (!Player.DoesProfileExist(Id)) {
+                await Context.User.SendMessageAsync($"Profile does for user {Context.User.Username} not exist, please run the following command.\n!n assign `server` `character name`");
+                return;
+            }
+            var player = Player.Load(Id);
 
             if (player.xivdbURL == "" || player.xivdbURL.Length == 0 || player.xivdbURL == null) {
                 player.xivdbURL = GetXivDB(player.playerName, player.world, false).Result.ToString();
                 if (player.xivdbURL == "!@invalid") {
-                    await ReplyAsync("Character page not found at XIVDB");
+                    await SendProfileNoXIVDB(Id);
                     return;
                 }
             } 
@@ -297,7 +365,8 @@ namespace Nero
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
                 if (player.xivdbURL_API == "!@invalid") {
-                    await ReplyAsync("Character API URL not found at XIVDB");
+                    await Context.User.SendMessageAsync("Character API URL not found at XIVDB");
+                    await SendProfileNoXIVDB(Id);
                     return;
                 }
             } 
@@ -364,6 +433,96 @@ namespace Nero
             await ReplyAsync("", embed: embed);
             
         }
+
+        public async Task<Embed> SendProfileDM(ulong Id) {
+            var context = Context;
+             Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Id)}");
+            if (!Player.DoesProfileExist(Id)) {
+                await Context.User.SendMessageAsync($"Profile does for user {Context.User.Username} not exist, please run the following command.\n!n assign `server` `character name`");
+                throw new Exception("");
+            }
+            var player = Player.Load(Id);
+
+            if (player.xivdbURL == "" || player.xivdbURL.Length == 0 || player.xivdbURL == null) {
+                player.xivdbURL = GetXivDB(player.playerName, player.world, false).Result.ToString();
+                if (player.xivdbURL == "!@invalid") {
+                    //await SendProfileNoXIVDB(Id);
+                    throw new Exception("Invalid XIVDB api url");
+                }
+            } 
+
+            if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
+                player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
+                if (player.xivdbURL_API == "!@invalid") {
+                    await ReplyAsync("Character API URL not found at XIVDB");
+                    //await SendProfileNoXIVDB(Id);
+                    throw new Exception("Invalid XIVDB api url");
+                }
+            } 
+
+            Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
+
+            var client = HTTPHelpers.NewClient();
+
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
+            
+            var raidJobs = "";
+            foreach(var job in player.jobs) {
+                if(raidJobs.Contains(job.name) == false) {
+                    raidJobs += $" - **{job.name}**\n" + 
+                        $"    •  Historical DPS: {job.historical_dps}\n" +
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                }
+                
+            }
+
+
+
+            try {
+                //foreach (var job in xivdbCharacter.data.classjobs.class_jobs) {
+                    //jobs += $"{job.name} - {job.level}";
+                //}
+            } catch {
+                Console.WriteLine($"classjobs is null: {xivdbCharacter.data.classjobs.class_jobs == null}");
+            }
+
+            var clears = "";
+
+            foreach (var clear in player.GetClearedFights(context)) {
+                clears += $" - {clear}\n";
+            }
+
+            
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" + 
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
+            $"__**Raid Jobs**__\n" + 
+            $"{raidJobs}\n" + 
+            $"__**Clears**__\n" + 
+            $"{clears}\n" + 
+            $""; //+ 
+            //$"__**Jobs**__\n" + 
+            //$"{jobs}";
+
+
+
+            var embed = new EmbedBuilder()
+            .WithTitle($"{xivdbCharacter.name} - {xivdbCharacter.data.title}")
+            .WithUrl(player.xivdbURL)
+            .WithThumbnailUrl(xivdbCharacter.avatar)
+            .WithImageUrl(xivdbCharacter.portrait)
+            .WithFooter(new EmbedFooterBuilder()
+            .WithText($"{player.dc} - {player.world} | {xivdbCharacter.data.race}"))
+            .WithColor(new Color(102, 255, 222))
+            .WithDescription(reply)
+            .Build();
+
+
+            return embed;
+            
+        }
+        
         public async Task<string> GetXivDB(string name, string world, bool api) {
             if (api == true) {
                 var url = new Uri($"https://api.xivdb.com/search?one=characters&string={name}&pretty=1");

@@ -39,7 +39,7 @@ namespace Nero
             // Try and execute a command with the given context
             var context = new SocketCommandContext(_client, msg);
             var result = await _commands.ExecuteAsync(context, argPos, _provider);
-            Console.WriteLine($"{context.Guild.Name}: {msg}");
+            Console.WriteLine($"{context.User.Username}: {msg}");
 			// If execution failed, reply with the error message.
 			if (!result.IsSuccess) {
 				//await context.Channel.SendMessageAsync("Thats an invalid Command, try `!n help`");

@@ -4,7 +4,7 @@ using System.IO;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Discord.Addons.Paginator;
+using Discord.Addons.Interactive;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Nero
@@ -30,6 +30,7 @@ namespace Nero
             });
 
             _client.Log += Log;
+            _client.JoinedGuild += Joined;
 
             await _client.LoginAsync(TokenType.Bot, Configuration.Load().Token);
             await _client.StartAsync();
@@ -43,7 +44,8 @@ namespace Nero
         public IServiceProvider ConfigureServices(){
             var services = new ServiceCollection()
                 .AddSingleton(_client)
-                .AddPaginator(_client, Log);
+                .AddSingleton<InteractiveService>();
+                //.AddPaginator(_client, Log);
             return services.BuildServiceProvider();
         }
 
@@ -76,6 +78,15 @@ namespace Nero
             return Task.CompletedTask;
         }
 
+        private async Task Joined(SocketGuild guild) {
+            var owner = guild.Owner;
+            
+            await Nero.ServerIntro.JoinedServer(guild, owner);
+            
+            
+
+            return;
+        }
 
     }
 }

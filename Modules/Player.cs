@@ -27,6 +27,7 @@ namespace Nero {
         public string xivdbURL_API;
 
         public double[] fight_dps;
+        public ulong staticId;
 
         public Player(ulong _discordID, string _playerName, string _dc, string _world) {
             discordID = _discordID;
@@ -46,6 +47,7 @@ namespace Nero {
             xivdbURL = "";
             xivdbURL_API = "";
             fight_dps = new double[12];
+            staticId = 0;
             this.EnsureExists();
         }
 
@@ -96,7 +98,7 @@ namespace Nero {
 
             
             if (fightsCleared > 0) {
-                this.bestPercent /= (fightsCleared - 1); // minus exdeath  
+                this.bestPercent /= fightsCleared; 
             } else {
                 this.bestPercent = 0.0;
             }
@@ -105,7 +107,8 @@ namespace Nero {
 
         public string GetTopThreeDPS(Fight fight, ICommandContext context) {
             //Console.WriteLine(fight.fightName);
-            var emoteResults =  from emo in context.Guild.Emotes
+            if (context != null) {
+                var emoteResults =  from emo in context.Guild.Emotes
                                 where emo.Name.ToLower().Contains("ast") || emo.Name.ToLower().Contains("blm") || emo.Name.ToLower().Contains("brd") ||
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||
                                 emo.Name.ToLower() == "mnk" || emo.Name.ToLower().Contains("nin") || emo.Name.ToLower().Contains("pld") ||
@@ -113,45 +116,61 @@ namespace Nero {
                                 emo.Name.ToLower().Contains("smn") || emo.Name.ToLower().Contains("war") || emo.Name.ToLower() == "whm" 
                                 select emo;
 
-            var reply = "";
+                var reply = "";
 
-            if (emoteResults.Count() > 0) {
-                var jobsSortedResults = (from job in fight.jobs
-                                        orderby job.dps
-                                        select job).Take(3);
+                if (emoteResults.Count() > 0) {
+                    var jobsSortedResults = (from job in fight.jobs
+                                            orderby job.dps
+                                            select job).Take(3);
 
-                if (jobsSortedResults.Count() > 0) {
-                    foreach (var job in jobsSortedResults) {
-                        foreach (var emote in emoteResults) {
-                            if (job.short_name == emote.Name) {
-                                reply += $"{emote.ToString()} {Math.Floor(job.dps)}% ";
-                                //Console.WriteLine(reply);
+                    if (jobsSortedResults.Count() > 0) {
+                        foreach (var job in jobsSortedResults) {
+                            foreach (var emote in emoteResults) {
+                                if (job.short_name == emote.Name) {
+                                    reply += $"{emote.ToString()} {Math.Floor(job.dps)}% ";
+                                    //Console.WriteLine(reply);
+                                }
                             }
                         }
                     }
-                }
                 
-                jobsSortedResults = null;
-            } else {
-                var jobsSortedResults = (from job in fight.jobs
-                                        orderby job.dps
-                                        select job).Take(3);
+                    jobsSortedResults = null;
+                } else {
+                    var jobsSortedResults = (from job in fight.jobs
+                                            orderby job.dps
+                                            select job).Take(3);
 
-                if (jobsSortedResults.Count() > 0) {
-                    foreach (var job in jobsSortedResults) {
-                        
-                            
-                        reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
-                        //Console.WriteLine(reply);
+                    if (jobsSortedResults.Count() > 0) {
+                        foreach (var job in jobsSortedResults) {
+                            reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
+                            //Console.WriteLine(reply);
                             
                         
+                        }
                     }
                 }
+
+
+                return reply;
+            } else {
+                var reply = "";
+
+                var jobsSortedResults = (from job in fight.jobs
+                                            orderby job.dps
+                                            select job).Take(3);
+
+                    if (jobsSortedResults.Count() > 0) {
+                        foreach (var job in jobsSortedResults) {
+                            reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
+                            //Console.WriteLine(reply);
+                            
+                        
+                        }
+                    }
+                    return reply;
+                }
             }
-
-
-            return reply;
-        }
+        
 
 
 public List<string> GetClearedFights(){
@@ -198,27 +217,31 @@ public List<string> GetClearedFights(){
                         case "Alte Roite":
                             clearedFightsList.Add($"O1S");
                             cleared.Add("O1S");
+                            fightsCleared++;
                             break;
                         case "Catastrophe":
                             clearedFightsList.Add($"O2S");
                             cleared.Add("O2S");
+                            fightsCleared++;
                             break;
                         case "Halicarnassus":
                             clearedFightsList.Add($"O3S");
                             cleared.Add("O3S");
+                            fightsCleared++;
                             break;
                         case "Exdeath":
                             break;
                         case "Neo Exdeath":
                             clearedFightsList.Add($"O4S");
                             cleared.Add("O4S");
+                            fightsCleared++;
                             break;
                         default:
                             cleared.Add(fight.fightName);
+                            fightsCleared++;
                             break;
                     }
 
-                    fightsCleared++;
                 }
 
             }
@@ -272,27 +295,32 @@ public List<string> GetClearedFights(){
                         case "Alte Roite":
                             clearedFightsList.Add($"O1S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O1S");
+                            fightsCleared++;
                             break;
                         case "Catastrophe":
                             clearedFightsList.Add($"O2S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O2S");
+                            fightsCleared++;
                             break;
                         case "Halicarnassus":
                             clearedFightsList.Add($"O3S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O3S");
+                            fightsCleared++;
                             break;
                         case "Exdeath":
                             break;
                         case "Neo Exdeath":
                             clearedFightsList.Add($"O4S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O4S");
+                            fightsCleared++;
                             break;
                         default:
                             cleared.Add(fight.fightName);
+                            fightsCleared++;
                             break;
                     }
 
-                    fightsCleared++;
+                    
                 }
 
             }
