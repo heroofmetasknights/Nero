@@ -36,8 +36,13 @@ namespace Nero {
 				var staticNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
 
 				// Static Datacenter
-				await Context.User.SendMessageAsync("Please enter the datacenter where your static is located: ");
+				await Context.User.SendMessageAsync("Please enter the datacenter (primal, chaos, aether, etc) where your static is located: ");
 				var staticDCResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+
+				if(staticDCResponse.Content.ToLower() != "primal" && staticDCResponse.Content.ToLower() != "aether" && staticDCResponse.Content.ToLower() != "elemental" && staticDCResponse.Content.ToLower() != "gaia" && staticDCResponse.Content.ToLower() != "chaos" && staticDCResponse.Content.ToLower() != "mana") {
+					await Context.User.SendMessageAsync("Thats not a datacenter, (primal, chaos, aether, etc) try again: ");
+					staticDCResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+				}
 
 				// Gets the Server, probably should refactor this
 				var serv = Context.Client.Guilds;
@@ -61,10 +66,12 @@ namespace Nero {
 				PlayerStatic ps = new PlayerStatic(results.First().Id, staticNameResponse.Content.ToLower(), staticDCResponse.Content.ToLower(), Context.User.Id, serpento.invite);
 
 				// Gets the recruitment filters from the user
-				await Context.User.SendMessageAsync("Please input any recruiting filters you want seperated by commas, these can be changed later. Filter List: `job`, `cleared-o#s`");
+				await Context.User.SendMessageAsync("Please input any recruiting filters you want seperated by commas, these can be changed later. Filter List: `job`, `cleared-o#s`\nTo skip this type **skip**");
 				var filterResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
-				var filterList = filterResponse.Content.ToLower().Split(',').ToList();
-				ps.Filters = filterList;
+				if (!filterResponse.Content.ToLower().Contains("skip")) {
+					var filterList = filterResponse.Content.ToLower().Split(',').ToList();
+					ps.Filters = filterList;
+				}
 
 				// Recruitment
 				await Context.User.SendMessageAsync("Enable Recruitment? This can be enabled later. Y/N");
@@ -72,6 +79,7 @@ namespace Nero {
 				if (recruitmentResponse.Content.ToLower() == "y") {
 					ps.recruiting = true;	
 				}
+				await Context.User.SendMessageAsync("Recruitment set");
 
 				// Adds the Creator to the Member List
 				ps.Members.Add(Context.User.Username, Context.User.Id);
@@ -87,24 +95,65 @@ namespace Nero {
 		[Alias("r")]
 		public async Task RecruitmentToggle() {
 			var player = Player.Load(Context.User.Id);
-			PlayerStatic ps = PlayerStatic.Load(player.staticId);
+			
+			PlayerStatic ps = ListOwnerServers(Context).Result;
+			
+
 			if (ps.recruiting == true) {
-				await Context.User.SendMessageAsync("Recruitment is Enabled");
+				await Context.User.SendMessageAsync($"Recruitment is **Enabled** for {ps.PlayerStaticName}");
 			} else {
-				await Context.User.SendMessageAsync("Recruitment is Disabled");
+				await Context.User.SendMessageAsync($"Recruitment is **Disabled** for {ps.PlayerStaticName}");
 			}
 
 			await Context.User.SendMessageAsync("Type On to enable Recruitment, Off to Disable recruitment or Exit to exit this prompt");
 			var recruitmentResponse = await NextMessageAsync(true, false, timeout:TimeSpan.FromMinutes(5));
 			if (recruitmentResponse.Content.ToLower() == "on") {
 				ps.recruiting = true;
-				ps.EnsureExists();	
-			} else if (recruitmentResponse.Content.ToLower() == "Off") {
-				ps.recruiting = true;
 				ps.EnsureExists();
+				await Context.User.SendMessageAsync("Recruitment is Enabled");
+			} else if (recruitmentResponse.Content.ToLower() == "Off") {
+				ps.recruiting = false;
+				ps.EnsureExists();
+				await Context.User.SendMessageAsync("Recruitment is Disabled");
 			} else {
 				return;
 			}
+		}
+
+		[Command("view", RunMode = RunMode.Async)]
+		[Alias("v")]
+		public async Task ViewStatic() {
+			var player = Player.Load(Context.User.Id);
+			if(player.staticId == 0) {
+				await Context.User.SendMessageAsync("You are not in a static");
+				return;
+			} 
+			PlayerStatic ps = ListOwnerServersInChannel(Context).Result;
+			var reply = "";
+
+			foreach (var member in ps.Members) {
+				if(Player.DoesProfileExist(member.Value)) {
+					var membah = Player.Load(member.Value);
+					reply += $"{membah.playerName} - ";
+					var cleared = membah.GetClearedFights();
+					foreach (var clear in cleared) {
+						reply += $"{clear} ";
+					}
+					reply += "\n";
+				} else {
+					reply += $"{member.Key}\n";
+				}
+			}
+
+			var embed = new EmbedBuilder()
+				.WithTitle(ps.PlayerStaticName)
+				.WithColor(new Color(250, 140, 73))
+				.WithDescription(reply)
+				.WithFooter(new EmbedFooterBuilder()
+				.WithText($"{ps.Applications.Count()} pending application(s)"))
+				.Build();
+
+			await ReplyAsync("", embed: embed);
 		}
 
 
@@ -112,18 +161,30 @@ namespace Nero {
 		[Alias("f")]
 		public async Task UpdateFilters() {
 			var player = Player.Load(Context.User.Id);
-			PlayerStatic ps = PlayerStatic.Load(player.staticId);
+			PlayerStatic ps = ListOwnerServers(Context).Result;
 
 			var reply = "";
-			foreach(var filt in ps.Filters) {
-				reply += $"{filt}\n";
-			}
 
-			await Context.User.SendMessageAsync($"Current Filters for {ps.PlayerStaticName}:\n{reply}\nPlease input new filters seperated by commas. Available filters: `job`, `cleared-o#s`");
-			ps.Filters.Clear();
+			if (ps.Filters != null) {
+				foreach(var filt in ps.Filters) {
+					reply += $"{filt}\n";
+				}
+			}
+			
+
+			await Context.User.SendMessageAsync($"Current Filters for {ps.PlayerStaticName}:\n{reply}\nPlease input new filters seperated by commas. Available filters: `job`, `cleared-o#s`\nThe old filters are overwritten\nTo exit type **exit**");
+			if (ps.Filters != null){
+				ps.Filters.Clear();
+			}
 			var filterResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+			if(filterResponse.Content.ToLower() == "exit") {
+				await Context.User.SendMessageAsync("exiting");
+				return;
+			}
 			var filterList = filterResponse.Content.ToLower().Split(',').ToList();
 			ps.Filters = filterList;
+			ps.EnsureExists();
+			await Context.User.SendMessageAsync("Filters set");
 		}
 
 		[Command("join", RunMode = RunMode.Async)]
@@ -171,9 +232,8 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Console.WriteLine("sending profile");
 									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
-									Console.WriteLine("profile sent");
+									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
 									await Context.User.SendMessageAsync("Requirements not met");
@@ -187,9 +247,8 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Console.WriteLine("sending profile");
 									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
-									Console.WriteLine("profile sent");
+									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
 									await Context.User.SendMessageAsync("Requirements not met");
@@ -246,9 +305,8 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Console.WriteLine("sending profile");
 									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
-									Console.WriteLine("profile sent");
+									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
 									await Context.User.SendMessageAsync("Requirements not met");
@@ -262,9 +320,8 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Console.WriteLine("sending profile");
 									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
-									Console.WriteLine("profile sent");
+									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
 									await Context.User.SendMessageAsync("Requirements not met");
@@ -279,9 +336,10 @@ namespace Nero {
 		[Command("applications", RunMode = RunMode.Async)]
 		[Alias("a")]
 		public async Task Applications() {
-			
 			var playe = Player.Load(Context.User.Id);
-			PlayerStatic ps = PlayerStatic.Load(playe.staticId);
+
+			PlayerStatic ps = ListOwnerServers(Context).Result;
+
 			string reply = "";
 
 			int i=0;
@@ -291,7 +349,7 @@ namespace Nero {
 				i++;
 			}
 
-			await Context.User.SendMessageAsync($"Greetings! here are the Current applications: \n{reply}\n type approve or deny to launch a prompt.\n");
+			await Context.User.SendMessageAsync($"Greetings! here are the Current applications for {ps.PlayerStaticName}: \n{reply}\n type approve or deny to launch a prompt.\n");
 
 			var response = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
 
@@ -397,7 +455,7 @@ namespace Nero {
 
 			var message = new Discord.Addons.Interactive.PaginatedMessage();
 			message.Title = $"{files.Count()} Statics";
-			message.Color = new Color(102,255,222);
+			message.Color = new Color(250, 140, 73);
 			message.Pages = reply;
 			await PagedReplyAsync(reply);
 		}
@@ -431,7 +489,7 @@ namespace Nero {
 
 			var message = new Discord.Addons.Interactive.PaginatedMessage();
 			message.Title = $"{files.Count()} Statics";
-			message.Color = new Color(102,255,222);
+			message.Color = new Color(250, 140, 73);
 			message.Pages = reply;
 			
 			
@@ -471,9 +529,82 @@ namespace Nero {
 			
 			var message = new Discord.Addons.Interactive.PaginatedMessage();
 			message.Title = $"{files.Count()} Statics";
-			message.Color = new Color(102,255,222);
+			message.Color = new Color(250, 140, 73);
 			message.Pages = reply;
 			await PagedReplyAsync(reply);
+		}
+
+		public async Task<PlayerStatic> ListOwnerServers(SocketCommandContext Context) {
+			ulong serverID = 0;
+
+			string servers = "";
+            int k = 1;
+            Dictionary<string, ulong> userControlledservers = new Dictionary<string, ulong>();
+            foreach (var g in Context.Client.Guilds) {
+                if (Context.User.Id == g.Owner.Id){
+					if (PlayerStatic.DoesProfileExist(g.Id)) {
+						userControlledservers.Add(g.Name, g.Id);
+                     	servers += $"  * {g.Name} \n";
+                    	k++;
+					}
+                     
+                }
+            }
+
+            if(userControlledservers.Count > 1) {
+				await ReplyAsync($"You control the following servers:\n{servers} Please enter the name of the server you want to select, it does not have to be the full name.");
+            	var serverNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+            	foreach(var u in userControlledservers) {
+                	if (u.Key.ToLower().Contains(serverNameResponse.Content.ToLower())) {
+                    	serverID = u.Value;
+                    	break;
+                	}
+            	}
+			} else {
+				serverID = userControlledservers.Values.First();
+			}
+			
+			
+
+			PlayerStatic ps = PlayerStatic.Load(serverID);
+			return ps;
+		}
+
+		public async Task<PlayerStatic> ListOwnerServersInChannel(SocketCommandContext Context) {
+			ulong serverID = 0;
+
+			string servers = "";
+            int k = 1;
+            Dictionary<string, ulong> userControlledservers = new Dictionary<string, ulong>();
+            foreach (var g in Context.Client.Guilds) {
+                if (Context.User.Id == g.Owner.Id){
+					if (PlayerStatic.DoesProfileExist(g.Id)) {
+						userControlledservers.Add(g.Name, g.Id);
+                     	servers += $"  * {g.Name} \n";
+                    	k++;
+					}
+                     
+                }
+            }
+
+			if(userControlledservers.Count > 1) {
+				await ReplyAsync($"You control the following servers:\n{servers} Please enter the name of the server you want to select, it does not have to be the full name.");
+            	var serverNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+            	foreach(var u in userControlledservers) {
+                	if (u.Key.ToLower().Contains(serverNameResponse.Content.ToLower())) {
+                    	serverID = u.Value;
+                    	break;
+                	}
+            	}
+			} else {
+				serverID = userControlledservers.Values.First();
+			}
+            
+			
+			
+
+			PlayerStatic ps = PlayerStatic.Load(serverID);
+			return ps;
 		}
 
 	}

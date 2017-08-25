@@ -21,13 +21,15 @@ namespace Nero
 
         public async Task StartAsync() {
             // Ensures the configuration file has been created.
-           Configuration.EnsureExists();
-
+            Configuration.EnsureExists();
+           
             // Creates a new client
             _client = new DiscordSocketClient(new DiscordSocketConfig {
                 LogLevel = LogSeverity.Info,
                 MessageCacheSize = 1000
             });
+
+            await _client.SetGameAsync("!n help");
 
             _client.Log += Log;
             _client.JoinedGuild += Joined;

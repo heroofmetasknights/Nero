@@ -24,18 +24,20 @@ namespace Manderville.Modules {
             var application = await Context.Client.GetApplicationInfoAsync();
             string reply = $"__**Player Commands**__\n" +
                 $"**a**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" + 
-                $"**v**iew: Views a users profile\n" + 
-                $"**v**iew `@mention`: view a discord users profile\n" + 
+                $"**v**iew: Views a users profile.\n" + 
+                $"**v**iew `@mention`: view a specified users profile.\n" +
+                "**I**nvite **B**ot: Gives a link to invite nero to your server.\n" +
                 $"__**Static Commands**__\n" +
                 $"**S**tatic **A**pplications: View, approve or deny applications to the static.\n" +
                 $"**S**tatic **C**reate: Launches the static creation wizard. **!!Needs a discord server!!**\n" +
-                $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters" + 
-                $"**S**tatic **J**oin: Launches the static join wizard\n" +
-                $"**S**tatic **J**oin `Static Name`: Skips the wizard\n" +
-                $"**S**tatic **L**ist: Lists all recruiting statics - not available for use in DM's" +
-                $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's" +
-                $"**S**tatic **R**ecruitment: Enables or disables Static Recruitment - not available for use in DM's" +
-                $"**S**tatic **S**earch `name`: Searches for statics by name - not available for use in DM's" +
+                $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters.\n" + 
+                $"**S**tatic **J**oin: Launches the static join wizard.\n" +
+                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" +
+                $"**S**tatic **L**ist: Lists all recruiting statics - not available for use in DM's.\n" +
+                $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's.\n" +
+                $"**S**tatic **R**ecruitment: Enables or disables Static Recruitment - not available for use in DM's.\n" +
+                $"**S**tatic **S**earch `name`: Searches for statics by name - not available for use in DM's.\n" +
+                "**S**tatic **V**iew: Views the members of the static and their clears.\n" +
                 $"__**Server Commands**__\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to:" +
@@ -92,8 +94,9 @@ namespace Manderville.Modules {
 		}
 
         [Command("Invite Bot")]
+        [Alias("ib")]
         public async Task InviteBot() {
-            await ReplyAsync("https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
+            await Context.User.SendMessageAsync("https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
         }
 
         [Command("guild")]

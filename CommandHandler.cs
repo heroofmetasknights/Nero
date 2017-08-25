@@ -42,7 +42,7 @@ namespace Nero
             Console.WriteLine($"{context.User.Username}: {msg}");
 			// If execution failed, reply with the error message.
 			if (!result.IsSuccess) {
-				//await context.Channel.SendMessageAsync("Thats an invalid Command, try `!n help`");
+				await context.Channel.SendMessageAsync("Thats an invalid Command, try `!n help`");
 				Console.Out.WriteLine("Error: " + result.Error.ToString());
 				Console.Out.WriteLine("Error Reason: " + result.ErrorReason.ToString());
                 Console.Out.WriteLine("Success: " + result.IsSuccess);

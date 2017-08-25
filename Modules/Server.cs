@@ -79,7 +79,6 @@ namespace Nero {
         
         public static async Task JoinedServer(SocketGuild guild, SocketGuildUser owner) {
             await owner.SendMessageAsync("Hi there, to start setup type `!n setup`");
-            
             return;
         }
 
@@ -95,7 +94,7 @@ namespace Nero {
             foreach (var g in Context.Client.Guilds) {
                 if (Context.User.Id == g.Owner.Id){
                      userControlledservers.Add(g.Name, g.Id);
-                     servers += $"  * {i}. {g.Name} \n";
+                     servers += $"  * {g.Name} \n";
                      i++;
                 }
             }
@@ -140,7 +139,7 @@ namespace Nero {
                 if (roleResponse.Content.ToLower() == "y")
                     server.useRoles = true;
                 
-                await Context.User.SendMessageAsync("Does this server host multiple statics **and** have they already added their static's to the Nero system? If they haven't, tell one of the members to run `!n static create` to start the setup process. \nY/N");
+                await Context.User.SendMessageAsync("Does this server host multiple statics? Y/N (**Note** The static must have already ran `!n static create` if they haven't choose N)");
 
 
                 var multipleResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
