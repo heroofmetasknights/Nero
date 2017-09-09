@@ -32,7 +32,7 @@ namespace Nero {
 			
 			if (goNextResponse.Content.ToLower() == "next") {
 				// Static Name
-				await Context.User.SendMessageAsync("Please input your static name");
+				await Context.User.SendMessageAsync("Please input your static name (**NOTE** Must match static discord name)");
 				var staticNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
 
 				// Static Datacenter
@@ -544,7 +544,7 @@ namespace Nero {
                 if (Context.User.Id == g.Owner.Id){
 					if (PlayerStatic.DoesProfileExist(g.Id)) {
 						userControlledservers.Add(g.Name, g.Id);
-                     	servers += $"  * {g.Name} \n";
+                     	servers += $"  {k}. {g.Name} \n";
                     	k++;
 					}
                      
@@ -552,14 +552,11 @@ namespace Nero {
             }
 
             if(userControlledservers.Count > 1) {
-				await ReplyAsync($"You control the following servers:\n{servers} Please enter the name of the server you want to select, it does not have to be the full name.");
+				await Context.User.SendMessageAsync($"You control the following servers:\n{servers} Please enter the number of the server you want to select.");
             	var serverNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
-            	foreach(var u in userControlledservers) {
-                	if (u.Key.ToLower().Contains(serverNameResponse.Content.ToLower())) {
-                    	serverID = u.Value;
-                    	break;
-                	}
-            	}
+            	int responseInt = Convert.ToInt32(serverNameResponse.Content);
+				serverID = userControlledservers.ElementAt(responseInt-1).Value;
+            	await Context.User.SendMessageAsync($"You have selected: **{userControlledservers.ElementAt(responseInt-1).Key}**");
 			} else {
 				serverID = userControlledservers.Values.First();
 			}

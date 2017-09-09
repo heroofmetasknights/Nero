@@ -21,10 +21,31 @@ namespace Nero
             var roles = new Dictionary<string, ulong>();
             foreach(var role in Context.Guild.Roles) {
                 if (role.Name.ToLower() != "new role") {
-                    roles.Add(role.Name.ToLower(), role.Id);
+                    if (!roles.ContainsKey(role.Name.ToLower()))
+                        roles.Add(role.Name.ToLower(), role.Id);
                 }
             }
             return roles;
+        }
+
+        [Command("remove")]
+        [RequireOwner]
+        public async Task removeRole([Remainder] string role) {
+            var roles = GetRoles();
+            if (roles.ContainsKey(role.ToLower())) {
+                foreach (var r in roles) {
+                    if (r.Key.ToLower() == role.ToLower()) {
+                        await deleteRole(r.Value);
+                    }
+                }
+            }
+        }
+
+        public async Task deleteRole(ulong r) {
+            var gRole =  Context.Guild.GetRole(r);
+                        Console.WriteLine($"{gRole.Name}_{gRole.Id}");
+                        await gRole.DeleteAsync();
+                        Console.Write(" - Deleted");
         }
 
         public async Task AddRoleAsync(Dictionary<string, ulong> roles, string name, Task<IGuildUser> user) {
@@ -39,24 +60,24 @@ namespace Nero
 
         public async Task AddDataCenterWorldRoles(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
             var rolesToAdd = new List<IRole>();
+            var rolesToCreate = new List<IRole>();
             var server = Server.Load(Context.Guild.Id);
-            bool rolesCreated = false;
+            var rand = new Random();
 
             if (server.useRoles == true) {
                 // World Role
                 if (!roles.ContainsKey(_player.world.ToLower())) {
-                    await Context.Guild.CreateRoleAsync($"{_player.world.ToLower()}");
-                    rolesCreated = true;
-                }
-                else {
+                    var gRole = await Context.Guild.CreateRoleAsync(_player.world.ToLower(), null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    rolesToAdd.Add(gRole);
+                }else {
                     if (user.Result.RoleIds.Contains(roles[_player.world.ToLower()]) == false)
                         rolesToAdd.Add(Context.Guild.GetRole(roles[_player.world.ToLower()]));
                 }
 
                 // DC Role
                 if (!roles.ContainsKey(_player.dc.ToLower())) {
-                    await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}");
-                    rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}"]));
+                    var gRole = await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    rolesToAdd.Add(gRole);
                 }
                 else {
                     if (user.Result.RoleIds.Contains(roles[_player.dc.ToLower()]) == false)
@@ -67,9 +88,7 @@ namespace Nero
                     await user.Result.AddRolesAsync(rolesToAdd);
                 }
 
-                if (rolesCreated == true) {
-                    await AddDataCenterWorldRoles(GetRoles(), user, _player);
-                }
+                
             }
 
             
@@ -82,6 +101,7 @@ namespace Nero
             var clearedFights = _player.GetClearedFights();
             var savageJobs = _player.GetSavageJobs();
             var rolesToAdd = new List<IRole>();
+            var rand = new Random();
             int savageFightCount = 4;
 
             if (server.useRoles == true) {
@@ -91,8 +111,8 @@ namespace Nero
                 // Susano Role
                 if (clearedFights.Contains("Susano") && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
                     if (!roles.ContainsKey($"cleared-susano-ex")) {
-                        await Context.Guild.CreateRoleAsync($"cleared-susano-ex");
-                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-susano-ex"]));
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-susano-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        rolesToAdd.Add(gRole);
                     }else {
                         rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-susano-ex"]));
                     }
@@ -100,8 +120,8 @@ namespace Nero
                 // Lakshmi Role
                 if (clearedFights.Contains("Lakshmi") && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
                     if (!roles.ContainsKey($"cleared-lakshmi-ex")) {
-                        await Context.Guild.CreateRoleAsync($"cleared-lakshmi-ex");
-                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-lakshmi-ex"]));
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-lakshmi-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        rolesToAdd.Add(gRole);
                     }else {
                         rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-lakshmi-ex"]));
                     }
@@ -109,8 +129,8 @@ namespace Nero
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
                     if(!roles.ContainsKey($"cleared-o{i}s")){
-                        await Context.Guild.CreateRoleAsync($"cleared-o{i}s");
-                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-o{i}s", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        rolesToAdd.Add(gRole);
                     } else {
                         if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
                             rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
@@ -124,8 +144,8 @@ namespace Nero
                     if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club")) {
                         rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
                     } else {
-                        await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}-bigdps-club");
-                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
+                        var gRole = await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}-bigdps-club", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        rolesToAdd.Add(gRole);
                     }
                 }
 
@@ -136,8 +156,8 @@ namespace Nero
                         if (roles.ContainsKey($"savage%-{job.ToLower()}")) {
                             rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
                         } else {
-                            await Context.Guild.CreateRoleAsync($"savage%-{job.ToLower()}");
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
+                            var gRole = await Context.Guild.CreateRoleAsync($"savage%-{job.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            rolesToAdd.Add(gRole);
                         }                        
                     }
                 }
@@ -156,8 +176,8 @@ namespace Nero
 
                         // Job role
                         if (!roles.ContainsKey(classjob.name.ToLower())) {
-                            await Context.Guild.CreateRoleAsync($"{classjob.name.ToLower()}");
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"{classjob.name.ToLower()}"]));
+                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.name.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            rolesToAdd.Add(gRole);
                         }
                         else {
                             if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
@@ -167,8 +187,8 @@ namespace Nero
                         //Role role
                         if (!roles.ContainsKey(classjob.role.ToLower()))
                         {
-                            await Context.Guild.CreateRoleAsync($"{classjob.role.ToLower()}");
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"{classjob.role.ToLower()}"]));
+                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.role.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            rolesToAdd.Add(gRole);
                         }
                         else
                         {
@@ -180,10 +200,6 @@ namespace Nero
                 }
             }
             
-            
-
-            
-
             if (rolesToAdd.Count > 0) {
                 
                 if (server.useRoles == true) 

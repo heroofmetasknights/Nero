@@ -40,6 +40,8 @@ namespace Manderville.Modules {
                 $"**S**tatic **S**earch `name`: Searches for statics by name - not available for use in DM's.\n" +
                 "**S**tatic **V**iew: Views the members of the static and their clears.\n" +
                 $"__**Server Commands**__\n" +
+                $"Setup: Launches a prompt to resetup your server.\n" +
+                $"Settings: Lets you view/change server settings.\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to:" +
                 $"{application.Owner.Mention}";
@@ -48,7 +50,7 @@ namespace Manderville.Modules {
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
-                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v0.1.1"))
+                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v1.0.0"))
                 .WithDescription(reply)
                 .WithUrl("https://gist.github.com/Infinifrui/88e578a66df698fcb27d418940f7c680")
                 .Build();
