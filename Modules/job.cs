@@ -20,21 +20,21 @@ namespace Nero
             savageP = 0.0;
 
             if (fflogs_name == "BlackMage") {
-                name = "Black-Mage";
+                name = "BlackMage";
                 short_name = "blm";
                 role = "DPS";
                 subrole = "Caster";
                 savage_name = "Savage%-BlackMage";
             }
             if (fflogs_name == "RedMage") {
-                name = "Red-Mage";
+                name = "RedMage";
                 short_name = "rdm";
                 role = "DPS";
                 subrole = "Caster";
                 savage_name = "Savage%-RedMage";
             }
             if (fflogs_name == "WhiteMage") {
-                name = "White-Mage";
+                name = "WhiteMage";
                 short_name = "whm";
                 role = "Healer";
                 subrole = "Caster";
@@ -104,7 +104,7 @@ namespace Nero
                 savage_name = "Savage%-Dragoon";
             }
             if (fflogs_name == "DarkKnight") {
-                name = "Dark-Knight";
+                name = "DarkKnight";
                 short_name = "drk";
                 role = "Tank";
                 subrole = "Melee";

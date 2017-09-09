@@ -23,10 +23,11 @@ namespace Manderville.Modules {
         public async Task HelpAsync() {
             var application = await Context.Client.GetApplicationInfoAsync();
             string reply = $"__**Player Commands**__\n" +
-                $"**a**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" + 
-                $"**v**iew: Views a users profile.\n" + 
-                $"**v**iew `@mention`: view a specified users profile.\n" +
-                "**I**nvite **B**ot: Gives a link to invite nero to your server.\n" +
+                $"**A**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" + 
+                $"**V**iew: Views a users profile.\n" + 
+                $"**V**iew `@mention`: view a specified users profile.\n" + 
+                $"**V**iew `server` `character name`: View a user by server and character name.\n" +
+                "**I**nvite**B**ot: Gives a link to invite nero to your server.\n" +
                 $"__**Static Commands**__\n" +
                 $"**S**tatic **A**pplications: View, approve or deny applications to the static.\n" +
                 $"**S**tatic **C**reate: Launches the static creation wizard. **!!Needs a discord server!!**\n" +
@@ -47,7 +48,7 @@ namespace Manderville.Modules {
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
-                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v0.1.0"))
+                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v0.1.1"))
                 .WithDescription(reply)
                 .WithUrl("https://gist.github.com/Infinifrui/88e578a66df698fcb27d418940f7c680")
                 .Build();
@@ -96,7 +97,7 @@ namespace Manderville.Modules {
         [Command("Invite Bot")]
         [Alias("ib")]
         public async Task InviteBot() {
-            await Context.User.SendMessageAsync("https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
+            await ReplyAsync("https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
         }
 
         [Command("guild")]
