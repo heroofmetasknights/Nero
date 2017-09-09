@@ -139,7 +139,7 @@ namespace Nero {
                 if (roleResponse.Content.ToLower() == "y")
                     server.useRoles = true;
                 
-                await Context.User.SendMessageAsync("Does this server host multiple statics? Y/N (**Note** The static must have already ran `!n static create` if they haven't choose N)");
+                await Context.User.SendMessageAsync("Does this server host multiple statics? Y/N (**Note** The static must have already ran `!n static create` if they haven't choose N). However you can always add them later.");
 
 
                 var multipleResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));

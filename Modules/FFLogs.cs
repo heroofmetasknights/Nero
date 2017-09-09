@@ -39,125 +39,154 @@ namespace Nero
 
         public async Task AddDataCenterWorldRoles(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
             var rolesToAdd = new List<IRole>();
-            // World Role
-            if (!roles.ContainsKey(_player.world.ToLower())) {
-                //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.world.ToLower()} does not exist yet, please create it.");
-            }
-            else
-            {
-                if (user.Result.RoleIds.Contains(roles[_player.world.ToLower()]) == false)
-                    rolesToAdd.Add(Context.Guild.GetRole(roles[_player.world.ToLower()]));
+            var server = Server.Load(Context.Guild.Id);
+            bool rolesCreated = false;
+
+            if (server.useRoles == true) {
+                // World Role
+                if (!roles.ContainsKey(_player.world.ToLower())) {
+                    await Context.Guild.CreateRoleAsync($"{_player.world.ToLower()}");
+                    rolesCreated = true;
+                }
+                else {
+                    if (user.Result.RoleIds.Contains(roles[_player.world.ToLower()]) == false)
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[_player.world.ToLower()]));
+                }
+
+                // DC Role
+                if (!roles.ContainsKey(_player.dc.ToLower())) {
+                    await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}");
+                    rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}"]));
+                }
+                else {
+                    if (user.Result.RoleIds.Contains(roles[_player.dc.ToLower()]) == false)
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[_player.dc.ToLower()]));
+                }
+
+                if (rolesToAdd.Count > 0) {
+                    await user.Result.AddRolesAsync(rolesToAdd);
+                }
+
+                if (rolesCreated == true) {
+                    await AddDataCenterWorldRoles(GetRoles(), user, _player);
+                }
             }
 
-            // DC Role
-            if (!roles.ContainsKey(_player.dc.ToLower()))
-            {
-                //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {_player.dc} does not exist yet, please create it.");
-            }
-            else
-            {
-                if (user.Result.RoleIds.Contains(roles[_player.dc.ToLower()]) == false)
-                    rolesToAdd.Add(Context.Guild.GetRole(roles[_player.dc.ToLower()]));
-            }
-
-            if (rolesToAdd.Count > 0) {
-                await user.Result.AddRolesAsync(rolesToAdd);
-            }
+            
         }
 
         
         public async Task AssignRolesAsync(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
+            var server = Server.Load(Context.Guild.Id);
             var context = Context;
             var clearedFights = _player.GetClearedFights();
             var savageJobs = _player.GetSavageJobs();
             var rolesToAdd = new List<IRole>();
             int savageFightCount = 4;
-            
-            if (clearedFights.Count == 0)
+
+            if (server.useRoles == true) {
+                if (clearedFights.Count == 0)
                 await ReplyAsync("This player has not cleared any extreme/savage fights");
 
-            // Susano Role
-            if (clearedFights.Contains("Susano") && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
-                rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-susano-ex"]));
+                // Susano Role
+                if (clearedFights.Contains("Susano") && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
+                    if (!roles.ContainsKey($"cleared-susano-ex")) {
+                        await Context.Guild.CreateRoleAsync($"cleared-susano-ex");
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-susano-ex"]));
+                    }else {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-susano-ex"]));
+                    }
 
-            // Lakshmi Role
-            if (clearedFights.Contains("Lakshmi") && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
-                rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-lakshmi-ex"]));
+                // Lakshmi Role
+                if (clearedFights.Contains("Lakshmi") && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
+                    if (!roles.ContainsKey($"cleared-lakshmi-ex")) {
+                        await Context.Guild.CreateRoleAsync($"cleared-lakshmi-ex");
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-lakshmi-ex"]));
+                    }else {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-lakshmi-ex"]));
+                    }
 
-            // Savage
-            for (int i = 1; i<=savageFightCount;i++) {
-                if(!roles.ContainsKey($"cleared-o{i}s")){
-                    //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"]).Mention} role: cleared-o{i}s does not exist yet, please create it.");
-                } else {
-                    if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
-                        Console.WriteLine($"Adding Role: Cleared-O{i}S");
+                // Savage
+                for (int i = 1; i<=savageFightCount;i++) {
+                    if(!roles.ContainsKey($"cleared-o{i}s")){
+                        await Context.Guild.CreateRoleAsync($"cleared-o{i}s");
                         rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
+                    } else {
+                        if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
+                        }
                     }
                 }
-            }
             
 
-            //top 10%
-            if (_player.bestSavagePercent >= 90.0 && _player.fightsCleared > 0) // magic number lol
-            {
-                if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club"))
-                    rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
-            }
+                //top 10%
+                if (_player.bestSavagePercent >= 90.0 && _player.fightsCleared > 0) { // magic number lol
+                    if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club")) {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
+                    } else {
+                        await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}-bigdps-club");
+                        rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
+                    }
+                }
 
-            //Savage-Job
-            if (savageJobs.Count > 0 && _player.cleared.Contains("O1S") &&
-            _player.cleared.Contains("O2S") && _player.cleared.Contains("O3S") && _player.cleared.Contains("O4S")) {
-                foreach (var job in savageJobs) {
-                    try {
-                        if (roles.ContainsKey($"savage%-{job.ToLower()}"))
+                //Savage-Job
+                if (savageJobs.Count > 0 && _player.cleared.Contains("O1S") &&
+                _player.cleared.Contains("O2S") && _player.cleared.Contains("O3S") && _player.cleared.Contains("O4S")) {
+                    foreach (var job in savageJobs) {
+                        if (roles.ContainsKey($"savage%-{job.ToLower()}")) {
                             rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
-                    } catch (Exception exception) {
-                        System.Console.WriteLine($"Exception caught: {exception}");
+                        } else {
+                            await Context.Guild.CreateRoleAsync($"savage%-{job.ToLower()}");
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
+                        }                        
                     }
                 }
-            }
 
             
 
-            if (_player.jobs.Count == 0)
-            {
-                await ReplyAsync("No recorded Parses");
-                return;
-            }
-            else
-            {
-                foreach (var classjob in _player.jobs)
+                if (_player.jobs.Count == 0)
                 {
+                    await ReplyAsync("No recorded Parses");
+                    return;
+                }
+                else
+                {
+                    foreach (var classjob in _player.jobs)
+                    {
 
-                    // Job role
-                    if (!roles.ContainsKey(classjob.name.ToLower()))
-                    {
-                        //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.name} does not exist yet, please create it.");
-                    }
-                    else
-                    {
-                        if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.name.ToLower()]));
-                    }
+                        // Job role
+                        if (!roles.ContainsKey(classjob.name.ToLower())) {
+                            await Context.Guild.CreateRoleAsync($"{classjob.name.ToLower()}");
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"{classjob.name.ToLower()}"]));
+                        }
+                        else {
+                            if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.name.ToLower()]));
+                        }
 
-                    //Role role
-                    if (!roles.ContainsKey(classjob.role.ToLower()))
-                    {
-                        //Console.WriteLine($"@{Context.Guild.GetRole(roles["administrator"])} role: {classjob.role} does not exist yet, please create it.");
-                    }
-                    else
-                    {
-                        if (user.Result.RoleIds.Contains(roles[classjob.role.ToLower()]) == false)
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.role.ToLower()]));
-                    }
+                        //Role role
+                        if (!roles.ContainsKey(classjob.role.ToLower()))
+                        {
+                            await Context.Guild.CreateRoleAsync($"{classjob.role.ToLower()}");
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"{classjob.role.ToLower()}"]));
+                        }
+                        else
+                        {
+                            if (user.Result.RoleIds.Contains(roles[classjob.role.ToLower()]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.role.ToLower()]));
+                        }
 
+                    }
                 }
             }
+            
+            
 
             
 
             if (rolesToAdd.Count > 0) {
                 
+                if (server.useRoles == true) 
                     await user.Result.AddRolesAsync(rolesToAdd);
                 
             }
