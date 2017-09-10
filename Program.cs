@@ -82,7 +82,11 @@ namespace Nero
 
         private async Task Joined(SocketGuild guild) {
             var owner = guild.Owner;
+
+            var testhouse = _client.GetGuild(286211518691934210);
             
+            await testhouse.GetTextChannel(286221025408974849).SendMessageAsync($"Nero has joined {guild.Name} - {guild.MemberCount}");
+
             await Nero.ServerIntro.JoinedServer(guild, owner);
             
             

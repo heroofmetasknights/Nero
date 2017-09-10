@@ -38,7 +38,7 @@ namespace Manderville.Modules {
                 $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's.\n" +
                 $"**S**tatic **R**ecruitment: Enables or disables Static Recruitment - not available for use in DM's.\n" +
                 $"**S**tatic **S**earch `name`: Searches for statics by name - not available for use in DM's.\n" +
-                "**S**tatic **V**iew: Views the members of the static and their clears.\n" +
+                "**S**tatic **V**iew: Views the members of your static and their clears.\n" +
                 $"__**Server Commands**__\n" +
                 $"Setup: Launches a prompt to resetup your server.\n" +
                 $"Settings: Lets you view/change server settings.\n" +
@@ -115,12 +115,19 @@ namespace Manderville.Modules {
 
 
 
+        [Command("send")]
+        [RequireOwner]
+        public async Task sendMes(string server, [Remainder]string message) {
+            var guilds = Context.Client.Guilds;
+            var targetlist = from g in guilds
+            where g.Name.ToLower() == server.ToLower()
+            select g;
 
+            var target = targetlist.First();
 
+            await target.Owner.SendMessageAsync(message);
 
-
-
-
+        }
 
 
 

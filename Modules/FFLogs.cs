@@ -17,6 +17,8 @@ namespace Nero
 
     public partial class fflogs : ModuleBase {
         
+        public static bool permError = false;
+
         public Dictionary<string, ulong> GetRoles() {
             var roles = new Dictionary<string, ulong>();
             foreach(var role in Context.Guild.Roles) {
@@ -61,6 +63,10 @@ namespace Nero
         public async Task AddDataCenterWorldRoles(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
             var rolesToAdd = new List<IRole>();
             var rolesToCreate = new List<IRole>();
+            if (Server.DoesProfileExist(Context.Guild.Id) == false) {
+                await ReplyAsync("Please have the server owner run !n setup");
+                return;
+            }
             var server = Server.Load(Context.Guild.Id);
             var rand = new Random();
 
@@ -96,7 +102,14 @@ namespace Nero
 
         
         public async Task AssignRolesAsync(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
+            Console.WriteLine(Server.DoesProfileExist(Context.Guild.Id));
+            if (Server.DoesProfileExist(Context.Guild.Id) == false) {
+                return;
+            }
             var server = Server.Load(Context.Guild.Id);
+            
+
+
             var context = Context;
             var clearedFights = _player.GetClearedFights();
             var savageJobs = _player.GetSavageJobs();
@@ -105,6 +118,15 @@ namespace Nero
             int savageFightCount = 4;
 
             if (server.useRoles == true) {
+                var bot = await Context.Guild.GetCurrentUserAsync();
+                Console.WriteLine($"\n{bot.Username}\n");
+
+                if (!bot.GuildPermissions.ManageRoles){
+                    await ReplyAsync($"{bot.Username} does not have the Manage Roles permission and can not assign roles without it, if you do not want nero to use roles please run the command `!n settings` and type `use roles` to select the correct setting, then type N to disable it for your server.");
+                    permError = true;
+                    return;
+                }
+
                 if (clearedFights.Count == 0)
                 await ReplyAsync("This player has not cleared any extreme/savage fights");
 
@@ -130,7 +152,9 @@ namespace Nero
                 for (int i = 1; i<=savageFightCount;i++) {
                     if(!roles.ContainsKey($"cleared-o{i}s")){
                         var gRole = await Context.Guild.CreateRoleAsync($"cleared-o{i}s", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
-                        rolesToAdd.Add(gRole);
+                        if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false)
+                            rolesToAdd.Add(gRole);
+
                     } else {
                         if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false) {
                             rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
@@ -216,22 +240,31 @@ namespace Nero
 
             await GetParse(server, character, Context.User.Id);
 
-            await msg.ModifyAsync(x =>
-                {
+            if (permError == false) {
+                await msg.ModifyAsync(x => {
                     x.Content = "Roles Updated";
                 });
+            } else {
+                await msg.DeleteAsync();
+                permError = false;
+            }
         }
 
         [Command("add profile")]
-        [Alias("ap")]
         public async Task AddProfile(string server, [Remainder] string character) {
             var msg = await ReplyAsync("Working...");
 
             await GetParse(server, character, Context.User.Id);
 
-            await msg.ModifyAsync(x =>{
-                x.Content = "Roles Updated";
-            });
+            if (permError == false) {
+                await msg.ModifyAsync(x =>{
+                    x.Content = "Roles Updated";
+                });
+            } else {
+                await msg.DeleteAsync();
+                permError = false;
+            }
+            
         }
 
         public async Task GetParse(string server, [Remainder] string character, ulong userID) {

@@ -9,7 +9,6 @@ using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using Discord.Addons.Interactive;
-using Discord.Addons.Interactive;
 using Newtonsoft.Json;
 using Nero.Modules.Utilities;
 
