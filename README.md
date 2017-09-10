@@ -96,7 +96,7 @@ Nero requires the following privledges to work properly
 
 `Add Reactions`: Required for the `!n static list`/`!n static search` commands as it allows paginated searches.
 
-`Manage Roles` - Required if you want to use the bots Role System,
+`Manage Roles` - Required if you want to use the bots Role System, please turn off the use roles feature in nero's settings as well.
 
 ____
 
