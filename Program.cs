@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Discord.Addons.Interactive;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace Nero
 {
     class Program
@@ -82,10 +83,25 @@ namespace Nero
 
         private async Task Joined(SocketGuild guild) {
             var owner = guild.Owner;
-
             var testhouse = _client.GetGuild(286211518691934210);
+            var rand = new Random();
+            var reply = 
+            $"Members: {guild.MemberCount}\n" + 
+            $"Channels: {guild.Channels.Count}\n" + 
+            $"Default Channel: {guild.DefaultChannel.Name}\n" + 
+            $"Roles: {guild.Roles.Count}\n" +
+            $"Age: {guild.CreatedAt.CompareTo(DateTime.Now)}\n" + 
+            $"";
+
+
+            var embed = new EmbedBuilder()
+            .WithTitle(guild.Name)
+            .WithDescription(reply)
+            .WithColor(new Color(rand.Next(30, 250), rand.Next(30, 250), rand.Next(30, 250)))
+            .WithThumbnailUrl(guild.IconUrl)
+            .Build();
             
-            await testhouse.GetTextChannel(286221025408974849).SendMessageAsync($"Nero has joined {guild.Name} - {guild.MemberCount}");
+            await testhouse.GetTextChannel(286221025408974849).SendMessageAsync("", embed: embed);
 
             await Nero.ServerIntro.JoinedServer(guild, owner);
             

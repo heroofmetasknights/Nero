@@ -109,11 +109,11 @@ namespace Nero {
 			if (recruitmentResponse.Content.ToLower() == "on") {
 				ps.recruiting = true;
 				ps.EnsureExists();
-				await Context.User.SendMessageAsync("Recruitment is Enabled");
-			} else if (recruitmentResponse.Content.ToLower() == "Off") {
+				await Context.User.SendMessageAsync("Recruitment is now **Enabled**");
+			} else if (recruitmentResponse.Content.ToLower() == "off") {
 				ps.recruiting = false;
 				ps.EnsureExists();
-				await Context.User.SendMessageAsync("Recruitment is Disabled");
+				await Context.User.SendMessageAsync("Recruitment is now **Disabled**");
 			} else {
 				return;
 			}
@@ -213,7 +213,7 @@ namespace Nero {
 				await Context.User.SendMessageAsync($"You are not located in the {ps.dc} datacenter");
 			}
 
-			if (!ps.Applications.ContainsValue(Context.User.Id)) {
+			if (!ps.Applications.ContainsValue(Context.User.Id) && !ps.Members.ContainsValue(Context.User.Id)) {
 				if (ps.Filters.Count == 0) {
 					ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 					ps.EnsureExists();
@@ -256,6 +256,8 @@ namespace Nero {
 						}
 					}
 				}
+			} else {
+				await Context.User.SendMessageAsync($"You are either already a member of {ps.PlayerStaticName} or have already sent in an application");
 			}
 		}
 
@@ -286,7 +288,7 @@ namespace Nero {
 				await Context.User.SendMessageAsync($"You are not located in the {ps.dc} datacenter");
 			}
 
-			if (!ps.Applications.ContainsValue(Context.User.Id)) {
+			if (!ps.Applications.ContainsValue(Context.User.Id) && !ps.Members.ContainsValue(Context.User.Id)) {
 				if (ps.Filters.Count == 0) {
 					ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 					ps.EnsureExists();
@@ -329,6 +331,8 @@ namespace Nero {
 						}
 					}
 				}
+			} else {
+				await Context.User.SendMessageAsync($"You are either already a member of {ps.PlayerStaticName} or have already sent in an application");
 			}
 		}
 
@@ -424,6 +428,53 @@ namespace Nero {
 			}
 
 		}
+
+
+		[Command("kick", RunMode = RunMode.Async)]
+		[Alias("k")]
+		public async Task Memberkick() {
+			var playe = Player.Load(Context.User.Id);
+			ulong playerID = 0; 
+			PlayerStatic ps = ListOwnerServers(Context).Result;
+
+			string reply = "";
+
+			int i=1;
+			foreach (var member in ps.Members) {
+				reply += $"	**{i}**. {member.Key}\n";
+				Console.WriteLine($"");
+				i++;
+			}
+
+			await Context.User.SendMessageAsync($"Greetings! here are the current members for {ps.PlayerStaticName}: \n{reply}\n type in a players number to kick them\n");
+
+			var kickResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+			
+            int responseInt = Convert.ToInt32(kickResponse.Content);
+			var membID = ps.Members.ElementAt(responseInt-1).Value;
+			var membname = ps.Members.ElementAt(responseInt-1).Key;
+			ps.Members.Remove(ps.Members.ElementAt(responseInt-1).Key);
+			ps.EnsureExists();
+
+			var targetServ = Context.Client.GetGuild(ps.discordServerID);
+			var botInstance = targetServ.GetUser(Context.Client.CurrentUser.Id);
+			var targetMember = targetServ.GetUser(membID);
+
+			if (botInstance.GuildPermissions.KickMembers) {
+				if (targetServ.OwnerId == targetMember.Id){
+					await Context.User.SendMessageAsync("Nero can not kick the owner of that server.");
+					return;
+				}
+
+				await targetMember.KickAsync();
+				await ReplyAsync("Nero kicked " + membname);
+			}
+
+			
+		}
+
+
+
 
 		[Command("search", RunMode = RunMode.Async)]
 		[Alias("s")]

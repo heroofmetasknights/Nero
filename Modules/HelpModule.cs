@@ -33,7 +33,8 @@ namespace Manderville.Modules {
                 $"**S**tatic **C**reate: Launches the static creation wizard. **!!Needs a discord server!!**\n" +
                 $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters.\n" + 
                 $"**S**tatic **J**oin: Launches the static join wizard.\n" +
-                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" +
+                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" + 
+                $"**S**tatic **K**ick: Launches a prompt to kick a member from a static\n" +
                 $"**S**tatic **L**ist: Lists all recruiting statics - not available for use in DM's.\n" +
                 $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's.\n" +
                 $"**S**tatic **R**ecruitment: Enables or disables Static Recruitment - not available for use in DM's.\n" +
