@@ -33,13 +33,16 @@ namespace Manderville.Modules {
                 $"**S**tatic **C**reate: Launches the static creation wizard. **!!Needs a discord server!!**\n" +
                 $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters.\n" + 
                 $"**S**tatic **J**oin: Launches the static join wizard.\n" +
-                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" +
+                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" + 
+                $"**S**tatic **K**ick: Launches a prompt to kick a member from a static\n" +
                 $"**S**tatic **L**ist: Lists all recruiting statics - not available for use in DM's.\n" +
                 $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's.\n" +
                 $"**S**tatic **R**ecruitment: Enables or disables Static Recruitment - not available for use in DM's.\n" +
                 $"**S**tatic **S**earch `name`: Searches for statics by name - not available for use in DM's.\n" +
-                "**S**tatic **V**iew: Views the members of the static and their clears.\n" +
+                "**S**tatic **V**iew: Views the members of your static and their clears.\n" +
                 $"__**Server Commands**__\n" +
+                $"Setup: Launches a prompt to resetup your server.\n" +
+                $"Settings: Lets you view/change server settings.\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to:" +
                 $"{application.Owner.Mention}";
@@ -48,7 +51,7 @@ namespace Manderville.Modules {
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
-                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v0.1.1"))
+                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v1.0.0"))
                 .WithDescription(reply)
                 .WithUrl("https://gist.github.com/Infinifrui/88e578a66df698fcb27d418940f7c680")
                 .Build();
@@ -113,12 +116,28 @@ namespace Manderville.Modules {
 
 
 
+        [Command("send")]
+        [RequireOwner]
+        public async Task sendMes(string server, [Remainder]string message) {
+            var guilds = Context.Client.Guilds;
+            var targetlist = from g in guilds
+            where g.Name.ToLower() == server.ToLower()
+            select g;
 
+            var target = targetlist.First();
 
+            await target.Owner.SendMessageAsync(message);
 
+        }
 
-
-
+        [Command("notify")]
+        [RequireOwner]
+        public async Task sendNot([Remainder]string message) {
+            var guilds = Context.Client.Guilds;
+            foreach (var serv in guilds) {
+                await serv.Owner.SendMessageAsync($"Notification: {message}");
+            }
+        }
 
 
 

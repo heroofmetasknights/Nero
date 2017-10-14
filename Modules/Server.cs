@@ -78,8 +78,78 @@ namespace Nero {
     public class ServerIntro : InteractiveBase {
         
         public static async Task JoinedServer(SocketGuild guild, SocketGuildUser owner) {
-            await owner.SendMessageAsync("Hi there, to start setup type `!n setup`");
+            await owner.SendMessageAsync("Hi there, to start setup type `!n setup`, if you encounter any problems just run the setup command again.");
             return;
+        }
+
+
+        [Command("settings", RunMode = RunMode.Async)]
+        public async Task ServerSettings() {
+            ulong serverID = 0;
+            bool ex = false;
+            
+            Console.WriteLine(Context.Message.Source.ToString());
+            
+            string servers = "";
+            int i = 1;
+            Dictionary<string, ulong> userControlledservers = new Dictionary<string, ulong>();
+            foreach (var g in Context.Client.Guilds) {
+                if (Context.User.Id == g.Owner.Id){
+                     userControlledservers.Add(g.Name, g.Id);
+                     servers += $"  {i}. {g.Name} \n";
+                     i++;
+                }
+            }
+
+            await Context.User.SendMessageAsync($"You control the following servers:\n{servers} Please enter the number of the server you want.");
+            var serverNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+            int responseInt = Convert.ToInt32(serverNameResponse.Content);
+            serverID = userControlledservers.ElementAt(responseInt-1).Value;
+            await Context.User.SendMessageAsync($"You have selected: **{userControlledservers.ElementAt(responseInt-1).Key}**");
+
+            var guild = Context.Client.GetGuild(serverID);
+
+            var server = Server.Load(serverID);
+
+            var currentSettings = 
+            "__**Current Settings**__\n" + 
+            $"Discord: {server.discordServerName}\n" + 
+            $"ID: {server.discordServerID}\n" + 
+            $"Members: {guild.MemberCount}\n" + 
+            $"Static: {server.isStatic}\n" +
+            $"Use Roles: {server.useRoles}\n" + 
+            $"";
+
+            await Context.User.SendMessageAsync(currentSettings + "\nType the name of the setting you wish to change.");
+
+            var settingsChoiceResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+            switch (settingsChoiceResponse.Content.ToLower()) {
+                case "static":
+                    await Context.User.SendMessageAsync("Type **Y** to make this server a static or **N** to make it a normal server.");
+                    var settingsStaticResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+                    if (settingsStaticResponse.Content.ToLower() == "Y") {
+                        server.isStatic = true;
+                        server.EnsureExists();
+                    } else {
+                        server.isStatic = false;
+                        server.EnsureExists();
+                    }
+                    break;
+                case "use roles":
+                await Context.User.SendMessageAsync("Type **Y** to make this server a static or **N** to make it a normal server.");
+                    var settingsRoleResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
+                    if (settingsRoleResponse.Content.ToLower() == "Y") {
+                        server.useRoles = true;
+                        server.EnsureExists();
+                    } else {
+                        server.useRoles = false;
+                        server.EnsureExists();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         [Command("setup", RunMode = RunMode.Async)]
@@ -94,20 +164,17 @@ namespace Nero {
             foreach (var g in Context.Client.Guilds) {
                 if (Context.User.Id == g.Owner.Id){
                      userControlledservers.Add(g.Name, g.Id);
-                     servers += $"  * {g.Name} \n";
+                     servers += $"  {i}. {g.Name} \n";
                      i++;
                 }
             }
 
 
-            await Context.User.SendMessageAsync($"You control the following servers:\n{servers} Please enter the name of the server you want to setup. Copy and Pasting is recommended.");
+            await Context.User.SendMessageAsync($"You control the following servers:\n{servers} Please enter the number of the server you want to setup.");
             var serverNameResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
-            foreach(var u in userControlledservers) {
-                if (u.Key.ToLower().Contains(serverNameResponse.Content.ToLower())) {
-                    serverID = u.Value;
-                    break;
-                }
-            }
+            int responseInt = Convert.ToInt32(serverNameResponse.Content);
+            serverID = userControlledservers.ElementAt(responseInt-1).Value;
+            await Context.User.SendMessageAsync($"You have selected: **{userControlledservers.ElementAt(responseInt-1).Key}**");
 
             var guild = Context.Client.GetGuild(serverID);
 
@@ -139,7 +206,7 @@ namespace Nero {
                 if (roleResponse.Content.ToLower() == "y")
                     server.useRoles = true;
                 
-                await Context.User.SendMessageAsync("Does this server host multiple statics? Y/N (**Note** The static must have already ran `!n static create` if they haven't choose N)");
+                await Context.User.SendMessageAsync("Does this server host multiple statics? Y/N (**Note** The static must have already ran `!n static create` if they haven't choose N). However you can always add them later.");
 
 
                 var multipleResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
@@ -164,7 +231,7 @@ namespace Nero {
                     }
                 }
                 server.EnsureExists();
-                await Context.User.SendMessageAsync("Setup Complete!");
+                await Context.User.SendMessageAsync("Setup Complete!, to change any setting you can run `!n settings`");
             }
 
         }

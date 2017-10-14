@@ -5,7 +5,7 @@ namespace Nero
         public int character_id { get; set; }
         public string character_name { get; set; }
         public double persecondamount { get; set; }
-        public int ilvl { get; set; }
+        public string ilvl { get; set; }
         public int duration { get; set; }
         public object start_time { get; set; }
         public string report_code { get; set; }
