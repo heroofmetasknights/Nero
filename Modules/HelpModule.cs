@@ -130,6 +130,15 @@ namespace Manderville.Modules {
 
         }
 
+        [Command("notify")]
+        [RequireOwner]
+        public async Task sendNot([Remainder]string message) {
+            var guilds = Context.Client.Guilds;
+            foreach (var serv in guilds) {
+                await serv.Owner.SendMessageAsync($"Notification: {message}");
+            }
+        }
+
 
 
     }

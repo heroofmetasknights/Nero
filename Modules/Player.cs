@@ -107,7 +107,7 @@ namespace Nero {
 
         public string GetTopThreeDPS(Fight fight, ICommandContext context) {
             //Console.WriteLine(fight.fightName);
-            if (context != null) {
+            if (context != null && context.Channel.GetType().Name != "SocketDMChannel") {
                 var emoteResults =  from emo in context.Guild.Emotes
                                 where emo.Name.ToLower().Contains("ast") || emo.Name.ToLower().Contains("blm") || emo.Name.ToLower().Contains("brd") ||
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||

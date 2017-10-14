@@ -78,7 +78,7 @@ namespace Nero {
     public class ServerIntro : InteractiveBase {
         
         public static async Task JoinedServer(SocketGuild guild, SocketGuildUser owner) {
-            await owner.SendMessageAsync("Hi there, to start setup type `!n setup`");
+            await owner.SendMessageAsync("Hi there, to start setup type `!n setup`, if you encounter any problems just run the setup command again.");
             return;
         }
 
@@ -231,7 +231,7 @@ namespace Nero {
                     }
                 }
                 server.EnsureExists();
-                await Context.User.SendMessageAsync("Setup Complete!");
+                await Context.User.SendMessageAsync("Setup Complete!, to change any setting you can run `!n settings`");
             }
 
         }

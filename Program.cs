@@ -34,6 +34,7 @@ namespace Nero
 
             _client.Log += Log;
             _client.JoinedGuild += Joined;
+            //_client.
 
             await _client.LoginAsync(TokenType.Bot, Configuration.Load().Token);
             await _client.StartAsync();
@@ -80,6 +81,8 @@ namespace Nero
             Console.ForegroundColor = cc;
             return Task.CompletedTask;
         }
+
+        
 
         private async Task Joined(SocketGuild guild) {
             var owner = guild.Owner;

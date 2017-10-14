@@ -219,7 +219,7 @@ namespace Nero {
 					ps.EnsureExists();
 					var fflogs = new fflogs();
 					Console.WriteLine("sending profile");
-					Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+					Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 					Console.WriteLine("profile sent");
 					await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 				} else {
@@ -231,7 +231,7 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+									Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
@@ -246,7 +246,7 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+									Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
@@ -294,7 +294,7 @@ namespace Nero {
 					ps.EnsureExists();
 					var fflogs = new fflogs();
 					Console.WriteLine("sending profile");
-					Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+					Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 					Console.WriteLine("profile sent");
 					await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 				} else {
@@ -306,7 +306,7 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+									Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {
@@ -321,7 +321,7 @@ namespace Nero {
 									ps.Applications.Add(Context.User.Username.ToLower(), Context.User.Id);
 									ps.EnsureExists();
 									var fflogs = new fflogs();
-									Embed embed = await fflogs.SendProfileDM(Context.User.Id);
+									Embed embed = await fflogs.SendProfileReply(Context.User.Id);
 									await Context.User.SendMessageAsync("Application sent");
 									await results.First().Owner.SendMessageAsync($"New Application from {Context.User.Username}, use !n static applications to approve/deny the application", embed: embed);
 								} else {

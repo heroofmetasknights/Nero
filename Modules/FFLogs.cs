@@ -30,26 +30,6 @@ namespace Nero
             return roles;
         }
 
-        [Command("remove")]
-        [RequireOwner]
-        public async Task removeRole([Remainder] string role) {
-            var roles = GetRoles();
-            if (roles.ContainsKey(role.ToLower())) {
-                foreach (var r in roles) {
-                    if (r.Key.ToLower() == role.ToLower()) {
-                        await deleteRole(r.Value);
-                    }
-                }
-            }
-        }
-
-        public async Task deleteRole(ulong r) {
-            var gRole =  Context.Guild.GetRole(r);
-                        Console.WriteLine($"{gRole.Name}_{gRole.Id}");
-                        await gRole.DeleteAsync();
-                        Console.Write(" - Deleted");
-        }
-
         public async Task AddRoleAsync(Dictionary<string, ulong> roles, string name, Task<IGuildUser> user) {
             if (!roles.ContainsKey(name.ToLower())) {
                 await ReplyAsync($"@{Context.Guild.GetRole(roles["administrator"])} role: {name} does not exist yet, please create it.");
@@ -421,8 +401,13 @@ namespace Nero
         [Command("view")]
         [Alias("v")]
         public async Task ViewProfile() {
-            await UpdateProfile(Context.User);
-            await SendProfile(Context.User.Id);
+            if (Context.Channel.GetType().Name == "SocketDMChannel") {
+                await SendProfileDM(Context.User.Id);
+            } else {
+                await UpdateProfile(Context.User);
+                await SendProfile(Context.User.Id);
+            }
+            
         }
 
 
@@ -517,7 +502,11 @@ namespace Nero
             .Build();
 
 
-            await ReplyAsync("", embed: embed);
+            if (Context.Channel.GetType().Name == "SocketDMChannel") {
+                await Context.User.SendMessageAsync("", embed: embed);
+            } else {
+                await ReplyAsync("", embed: embed);
+            }
         }
 
         [Command("update")]
@@ -676,7 +665,96 @@ namespace Nero
             
         }
 
-        public async Task<Embed> SendProfileDM(ulong Id) {
+        public async Task SendProfileDM(ulong Id) {
+            Console.WriteLine($"type: {Context.Channel.GetType().Name}");
+            var context = Context;
+            Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Id)}");
+            if (!Player.DoesProfileExist(Id)) {
+                await Context.User.SendMessageAsync($"Profile does for user {Context.User.Username} not exist, please run the following command.\n!n assign `server` `character name`");
+                throw new Exception("");
+            }
+            var player = Player.Load(Id);
+
+            if (player.xivdbURL == "" || player.xivdbURL.Length == 0 || player.xivdbURL == null) {
+                player.xivdbURL = GetXivDB(player.playerName, player.world, false).Result.ToString();
+                if (player.xivdbURL == "!@invalid") {
+                    //await SendProfileNoXIVDB(Id);
+                    throw new Exception("Invalid XIVDB api url");
+                }
+            } 
+
+            if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
+                player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
+                if (player.xivdbURL_API == "!@invalid") {
+                    await ReplyAsync("Character API URL not found at XIVDB");
+                    //await SendProfileNoXIVDB(Id);
+                    throw new Exception("Invalid XIVDB api url");
+                }
+            } 
+
+            Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
+
+            var client = HTTPHelpers.NewClient();
+
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
+            
+            var raidJobs = "";
+            foreach(var job in player.jobs) {
+                if(raidJobs.Contains(job.name) == false) {
+                    raidJobs += $" - **{job.name}**\n" + 
+                        $"    •  Historical DPS: {job.historical_dps}\n" +
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                }
+                
+            }
+
+
+
+            try {
+                //foreach (var job in xivdbCharacter.data.classjobs.class_jobs) {
+                    //jobs += $"{job.name} - {job.level}";
+                //}
+            } catch {
+                Console.WriteLine($"classjobs is null: {xivdbCharacter.data.classjobs.class_jobs == null}");
+            }
+
+            var clears = "";
+
+            foreach (var clear in player.GetClearedFights(context)) {
+                clears += $" - {clear}\n";
+            }
+
+            
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" + 
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
+            $"__**Raid Jobs**__\n" + 
+            $"{raidJobs}\n" + 
+            $"__**Clears**__\n" + 
+            $"{clears}\n" + 
+            $""; //+ 
+            //$"__**Jobs**__\n" + 
+            //$"{jobs}";
+
+
+
+            var embed = new EmbedBuilder()
+            .WithTitle($"{xivdbCharacter.name} - {xivdbCharacter.data.title}")
+            .WithUrl(player.xivdbURL)
+            .WithThumbnailUrl(xivdbCharacter.avatar)
+            .WithImageUrl(xivdbCharacter.portrait)
+            .WithFooter(new EmbedFooterBuilder()
+            .WithText($"{player.dc} - {player.world} | {xivdbCharacter.data.race}"))
+            .WithColor(new Color(102, 255, 222))
+            .WithDescription(reply)
+            .Build();
+
+            
+            await Context.User.SendMessageAsync("", embed: embed);  
+        }
+
+        public async Task<Embed> SendProfileReply(ulong Id) {
             var context = Context;
              Console.WriteLine($"does the players profile exist: {Player.DoesProfileExist(Id)}");
             if (!Player.DoesProfileExist(Id)) {
