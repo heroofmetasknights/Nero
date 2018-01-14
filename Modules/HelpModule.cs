@@ -45,15 +45,17 @@ namespace Manderville.Modules {
                 $"Settings: Lets you view/change server settings.\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to:" +
-                $"{application.Owner.Mention}";
+                $"{application.Owner.Mention}" +
+                $"Donate to keep the bot alive and contribute to future development:\n" +
+                $"paypal.me/NeroBot";
 
            
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
-                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v1.0.0"))
+                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v1.1.0"))
                 .WithDescription(reply)
-                .WithUrl("https://gist.github.com/Infinifrui/88e578a66df698fcb27d418940f7c680")
+                .WithUrl("https://gist.github.com/Infinifrui/43bc37aeb91533699ff748f787e61852")
                 .Build();
 
 

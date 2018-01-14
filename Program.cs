@@ -32,8 +32,14 @@ namespace Nero
 
             await _client.SetGameAsync("!n help");
 
+            
+
             _client.Log += Log;
             _client.JoinedGuild += Joined;
+            _client.UserJoined += UserJoinedServer;
+
+
+            
             //_client.
 
             await _client.LoginAsync(TokenType.Bot, Configuration.Load().Token);
@@ -43,6 +49,12 @@ namespace Nero
             await new CommandHandler().Install(services);
 
             await Task.Delay(-1); // Prevents Console Window from closing.
+        }
+
+
+        private async Task UserJoinedServer(SocketGuildUser user) {
+            //stuff
+           await user.SendMessageAsync("hi");
         }
 
         public IServiceProvider ConfigureServices(){

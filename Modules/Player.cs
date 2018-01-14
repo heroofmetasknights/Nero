@@ -59,12 +59,14 @@ namespace Nero {
             this.bestPercent = 0.0;
             Console.WriteLine("");
             foreach (var fight in fights) {
-                this.bestPercent += fight.bestPercent;
-                Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
-                if (this.bestDps <= fight.bestDps) {
-                    this.bestDps = fight.bestDps;
+                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime") {
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps) {
+                        this.bestDps = fight.bestDps;
+                    }
                 }
-
+                
 
                 switch (fight.fightName)
                     {
@@ -98,7 +100,9 @@ namespace Nero {
 
             
             if (fightsCleared > 0) {
-                this.bestPercent /= fightsCleared; 
+                this.bestPercent /= fightsCleared;
+                var tempPercent = this.bestPercent;
+                this.bestPercent = Math.Min(100, tempPercent); 
             } else {
                 this.bestPercent = 0.0;
             }
@@ -113,21 +117,22 @@ namespace Nero {
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||
                                 emo.Name.ToLower() == "mnk" || emo.Name.ToLower().Contains("nin") || emo.Name.ToLower().Contains("pld") ||
                                 emo.Name.ToLower().Contains("rdm") || emo.Name.ToLower().Contains("sam") || emo.Name.ToLower().Contains("sch") ||
-                                emo.Name.ToLower().Contains("smn") || emo.Name.ToLower().Contains("war") || emo.Name.ToLower() == "whm" 
+                                emo.Name.ToLower().Contains("smn") || emo.Name.ToLower().Contains("war") || emo.Name.ToLower().Contains("whm") 
                                 select emo;
 
                 var reply = "";
 
-                if (emoteResults.Count() > 0) {
+                if (emoteResults.Count() > 12) {
                     var jobsSortedResults = (from job in fight.jobs
                                             orderby job.dps
-                                            select job).Take(3);
+                                            select job).Reverse().Take(3);
+                    
 
                     if (jobsSortedResults.Count() > 0) {
                         foreach (var job in jobsSortedResults) {
                             foreach (var emote in emoteResults) {
                                 if (job.short_name == emote.Name) {
-                                    reply += $"{emote.ToString()} {Math.Floor(job.dps)}% ";
+                                    reply += $"{emote.ToString()} {job.dps}% ";
                                     //Console.WriteLine(reply);
                                 }
                             }
@@ -137,12 +142,12 @@ namespace Nero {
                     jobsSortedResults = null;
                 } else {
                     var jobsSortedResults = (from job in fight.jobs
-                                            orderby job.dps
-                                            select job).Take(3);
+                                            orderby job.historical_percent
+                                            select job).Reverse().Take(3);
 
                     if (jobsSortedResults.Count() > 0) {
                         foreach (var job in jobsSortedResults) {
-                            reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
+                            reply += $":{job.short_name}: {job.historical_percent}% ";
                             //Console.WriteLine(reply);
                             
                         
@@ -183,7 +188,9 @@ public List<string> GetClearedFights(){
                 foreach (var job in fight.jobs) {
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            j.savageP += job.historical_percent;
+                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                                j.savageP += job.historical_percent;
+                            }
                         }
                     }
                     
@@ -193,7 +200,9 @@ public List<string> GetClearedFights(){
 
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            j.savageP += job.historical_percent;
+                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                                j.savageP += job.historical_percent;
+                            }
                         }
                     }
                     } else {
@@ -236,6 +245,19 @@ public List<string> GetClearedFights(){
                             cleared.Add("O4S");
                             fightsCleared++;
                             break;
+                        case "Shinryu":
+                            var shinryuReply = $"\n**__Trial__**\nShinryu";
+                            clearedFightsList.Add(shinryuReply);
+                            cleared.Add("Shinryu");
+                            break;
+                        case "Bahamut Prime":
+                            clearedFightsList.Add("Bahamut");
+                            cleared.Add("Bahamut");
+                            break;
+                        case "Susano":
+                            break;
+                        case "Lakshmi":
+                            break;
                         default:
                             cleared.Add(fight.fightName);
                             fightsCleared++;
@@ -261,7 +283,9 @@ public List<string> GetClearedFights(){
                 foreach (var job in fight.jobs) {
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            j.savageP += job.historical_percent;
+                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                                j.savageP += job.historical_percent;
+                            }
                         }
                     }
                     
@@ -271,27 +295,27 @@ public List<string> GetClearedFights(){
 
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            j.savageP += job.historical_percent;
+                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                                j.savageP += job.historical_percent;
+                            }
                         }
                     }
                     } else {
                         foreach (var jb in this.jobs) {
-                            if (jb.name == job.name && jb.historical_percent <= job.historical_percent) {
+                            if (jb.name == job.name && jb.historical_percent <= job.historical_percent) { 
                                 jb.historical_percent = job.historical_percent;
                             }
                             if (jb.name == job.name && jb.historical_dps <= job.historical_dps) {
                                 jb.historical_dps = job.historical_dps;
                             }
 
-                            
                         }
                     }
                     
                 }
             
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
-                    switch (fight.fightName)
-                    {
+                    switch (fight.fightName) {
                         case "Alte Roite":
                             clearedFightsList.Add($"O1S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O1S");
@@ -313,6 +337,20 @@ public List<string> GetClearedFights(){
                             clearedFightsList.Add($"O4S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O4S");
                             fightsCleared++;
+                            break;
+                        case "Shinryu":
+                            var shinryuReply = $"\n**__Trial__**\n  - Shinryu {this.GetTopThreeDPS(fight, context)}";
+                            clearedFightsList.Add(shinryuReply);
+                            cleared.Add("Shinryu");
+                            //dont increment fightsCleared
+                            break;
+                        case "Bahamut Prime":
+                            clearedFightsList.Add("Bahamut");
+                            cleared.Add("Bahamut");
+                            break;
+                        case "Susano":
+                            break;
+                        case "Lakshmi":
                             break;
                         default:
                             cleared.Add(fight.fightName);

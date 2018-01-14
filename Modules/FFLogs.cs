@@ -110,23 +110,38 @@ namespace Nero
                 if (clearedFights.Count == 0)
                 await ReplyAsync("This player has not cleared any extreme/savage fights");
 
-                // Susano Role
-                if (clearedFights.Contains("Susano") && user.Result.RoleIds.Contains(roles["cleared-susano-ex"]) == false)
-                    if (!roles.ContainsKey($"cleared-susano-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-susano-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+
+                var shinryuclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Shinryu"));
+                var shinClear = false;
+                if(shinryuclear != null) {
+                    if (shinryuclear.Contains("Shinryu")) {
+                        shinClear = true;
+                    }
+                }
+                
+                
+                
+                if (shinClear == true) {
+                    if (!roles.ContainsKey($"cleared-shinryu-ex")) {
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-shinryu-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                         rolesToAdd.Add(gRole);
                     }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-susano-ex"]));
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-shinryu-ex"]));
                     }
 
-                // Lakshmi Role
-                if (clearedFights.Contains("Lakshmi") && user.Result.RoleIds.Contains(roles["cleared-lakshmi-ex"]) == false)
-                    if (!roles.ContainsKey($"cleared-lakshmi-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-lakshmi-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                }
+                
+                if (!roles.ContainsKey($"cleared-bahamut-ultimate")) {
+                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-bahamut-ultimate", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    if (clearedFights.Contains("Bahamut")) {
                         rolesToAdd.Add(gRole);
-                    }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-lakshmi-ex"]));
                     }
+                }else {
+                    if (clearedFights.Contains("Bahamut")) {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-bahamut-ultimate"]));
+                    }
+                }
+
 
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
@@ -257,7 +272,10 @@ namespace Nero
                               where wrld.Name.ToLower().Contains(server.ToLower())
                               select wrld;
             var world = worldResult.First();
+
             var url = new Uri($"https://www.fflogs.com/v1/parses/character/{character}/{world.Name}/{world.Region}/?api_key={Configuration.Load().FFLogsKey}");
+            var trialUrl = new Uri($"https://www.fflogs.com/v1/parses/character/{character}/{world.Name}/{world.Region}/?api_key=7bd977bcb89a89934dc26a137b6d2b24&zone=15&zone=15");
+            var ultimateUrl = new Uri($"https://www.fflogs.com/v1/parses/character/{character}/{world.Name}/{world.Region}/?api_key=7bd977bcb89a89934dc26a137b6d2b24&zone=15&zone=19");
             HttpClient client = HTTPHelpers.NewClient();
 
             var player = new Player(userID, character, world.DC, world.Name);
@@ -267,9 +285,14 @@ namespace Nero
             {
                 Console.WriteLine($"FFlogs URl: {url}");
                 string responseBody = await client.GetStringAsync(url);
+                string trialResponseBody = await client.GetStringAsync(trialUrl);
+                string ultimateResponseBody = await client.GetStringAsync(ultimateUrl);
                  
                 var parses = JsonConvert.DeserializeObject<List<Nero.Parses>>(responseBody);
-                
+                var trialParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(trialResponseBody);
+                var ultimateParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(ultimateResponseBody);
+                parses.AddRange(trialParses);
+                parses.AddRange(ultimateParses);
 
                 // instantiate best% and bestdps
                 double bestPercent = 0.0;
@@ -332,6 +355,8 @@ namespace Nero
                               select wrld;
             var world = worldResult.First();
             var url = new Uri($"https://www.fflogs.com/v1/parses/character/{name}/{world.Name}/{world.Region}/?api_key={Configuration.Load().FFLogsKey}");
+            var trialUrl = new Uri($"https://www.fflogs.com/v1/parses/character/{name}/{world.Name}/{world.Region}/?api_key=7bd977bcb89a89934dc26a137b6d2b24&zone=15&zone=15");
+            var ultimateUrl = new Uri($"https://www.fflogs.com/v1/parses/character/{name}/{world.Name}/{world.Region}/?api_key=7bd977bcb89a89934dc26a137b6d2b24&zone=15&zone=19");
             HttpClient client = HTTPHelpers.NewClient();
 
             var player = new Player(0, name, world.DC, world.Name);
@@ -340,8 +365,14 @@ namespace Nero
             {
                 Console.WriteLine($"FFlogs URl: {url}");
                 string responseBody = await client.GetStringAsync(url);
+                string trialResponseBody = await client.GetStringAsync(trialUrl);
+                string ultimateResponseBody = await client.GetStringAsync(ultimateUrl);
                  
                 var parses = JsonConvert.DeserializeObject<List<Nero.Parses>>(responseBody);
+                var trialParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(trialResponseBody);
+                var ultimateParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(ultimateResponseBody);
+                parses.AddRange(trialParses);
+                parses.AddRange(ultimateParses);
                 
 
                 // instantiate best% and bestdps
@@ -473,7 +504,9 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(Context)) {
-                clears += $" - {clear}\n";
+                if(clear.ToLower().Contains("shinryu")){
+                    clears += $" - {clear}\n";
+                }
             }
 
             
@@ -544,7 +577,11 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                clears += $" - {clear}\n";
+                if(!clear.ToLower().Contains("shinryu")){
+                    clears += $" - {clear}\n";
+                } else {
+                    clears += $"\n{clear}\n";
+                }
             }
 
             
@@ -553,7 +590,7 @@ namespace Nero
             $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
             $"__**Raid Jobs**__\n" + 
             $"{raidJobs}\n" + 
-            $"__**Clears**__\n" + 
+            $"__**Savage**__\n" + 
             $"{clears}\n" + 
             $""; //+ 
             //$"__**Jobs**__\n" + 
@@ -632,7 +669,11 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                clears += $" - {clear}\n";
+                if(!clear.ToLower().Contains("shinryu")){
+                    clears += $" - {clear}\n";
+                } else {
+                    clears += $"\n{clear}\n";
+                }
             }
 
             
@@ -722,7 +763,11 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                clears += $" - {clear}\n";
+                if(!clear.ToLower().Contains("shinryu")){
+                    clears += $" - {clear}\n";
+                } else {
+                    clears += $"\n{clear}\n";
+                }
             }
 
             
@@ -810,7 +855,11 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                clears += $" - {clear}\n";
+                if(!clear.ToLower().Contains("shinryu")){
+                    clears += $" - {clear}\n";
+                } else {
+                    clears += $"\n{clear}\n";
+                }
             }
 
             

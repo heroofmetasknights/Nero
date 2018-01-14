@@ -127,7 +127,7 @@ namespace Nero {
                 case "static":
                     await Context.User.SendMessageAsync("Type **Y** to make this server a static or **N** to make it a normal server.");
                     var settingsStaticResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
-                    if (settingsStaticResponse.Content.ToLower() == "Y") {
+                    if (settingsStaticResponse.Content.ToLower() == "y") {
                         server.isStatic = true;
                         server.EnsureExists();
                     } else {
@@ -136,9 +136,9 @@ namespace Nero {
                     }
                     break;
                 case "use roles":
-                await Context.User.SendMessageAsync("Type **Y** to make this server a static or **N** to make it a normal server.");
+                await Context.User.SendMessageAsync("Type **Y** to turn on role management or **N** to disable role management");
                     var settingsRoleResponse = await NextMessageAsync(true, false, timeout: TimeSpan.FromMinutes(5));
-                    if (settingsRoleResponse.Content.ToLower() == "Y") {
+                    if (settingsRoleResponse.Content.ToLower() == "y") {
                         server.useRoles = true;
                         server.EnsureExists();
                     } else {
