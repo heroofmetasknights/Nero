@@ -72,13 +72,10 @@ namespace Nero {
 
                 switch (fight.fightName)
                     {
-                        case "Alte Roite":
-                        case "Catastrophe":
-                        case "Halicarnassus":
-                        case "Exdeath":
-                        case "Neo Exdeath":
             						case "Phantom Train":
+                          break;
             						case "Demon Chadarnook":
+                          break;
             						case "Guardian":
             							if (fight.bestDps >= this.bestSavageDps)
                             this.bestSavageDps = fight.bestDps;
