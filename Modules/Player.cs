@@ -321,24 +321,24 @@ public List<string> GetClearedFights(){
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
                     switch (fight.fightName) {
                          case "Phantom Train":
-                            clearedFightsList.Add($"O5S");
+                            clearedFightsList.Add($"O5S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O5S");
                             fightsCleared++;
                             break;
                         case "Demon Chadarnook":
-                            clearedFightsList.Add($"O6S");
+                            clearedFightsList.Add($"O6S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O6S");
                             fightsCleared++;
                             break;
                         case "Guardian":
-                            clearedFightsList.Add($"O7S");
+                            clearedFightsList.Add($"O7S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O7S");
                             fightsCleared++;
                             break;
                         case "Kefka":
                             break;
                         case "God Kefka":
-                            clearedFightsList.Add($"O8S");
+                            clearedFightsList.Add($"O8S {this.GetTopThreeDPS(fight, context)}");
                             cleared.Add("O8S");
                             fightsCleared++;
                             break;
