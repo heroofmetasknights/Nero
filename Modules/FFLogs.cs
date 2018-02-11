@@ -505,7 +505,7 @@ namespace Nero
 
             foreach (var clear in player.GetClearedFights(Context)) {
                 //if(clear.ToLower().Contains("byakko")){
-                    clears += $" - {clear}\n";
+                    clears += $" - {clear}\n {this.GetTopThreeDPS(fight, context)}";
                 //}
             }
 
