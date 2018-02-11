@@ -259,8 +259,6 @@ public List<string> GetClearedFights(){
                             cleared.Add("Byakko");
                             break;
                         case "Shinryu":
-                            clearedFightsList.Add("Shinryu");
-                            cleared.Add("Shinryu");
                             break;
                         case "Bahamut Prime":
                             clearedFightsList.Add("Bahamut");
@@ -356,9 +354,6 @@ public List<string> GetClearedFights(){
                             cleared.Add("Byakko");
                             break;
                         case "Shinryu":
-                            clearedFightsList.Add("Shinryu");
-                            cleared.Add("Shinryu");
-                            //dont increment fightsCleared
                             break;
                         case "Bahamut Prime":
                             clearedFightsList.Add("Bahamut");
