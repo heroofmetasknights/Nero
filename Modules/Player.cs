@@ -80,24 +80,22 @@ namespace Nero {
                             break;
                         case "Neo Exdeath":
                             break;
-						case "Phantom Train":
-						case "Demon Chadarnook":
-						case "Guardian":
-							if (fight.bestDps >= this.bestSavageDps)
-                                this.bestSavageDps = fight.bestDps;
-
-                            if (fight.bestPercent >= this.bestSavagePercent)
-                                this.bestSavagePercent = fight.bestPercent;
-							break;
-						case "Kefka":
-							break;
-						case "God Kefka":
-							if (fight.bestDps >= this.bestSavageDps)
-                                this.bestSavageDps = fight.bestDps;
-
-                            if (fight.bestPercent >= this.bestSavagePercent)
-                                this.bestSavagePercent = fight.bestPercent;
-							break;
+            						case "Phantom Train":
+            						case "Demon Chadarnook":
+            						case "Guardian":
+            							if (fight.bestDps >= this.bestSavageDps)
+                            this.bestSavageDps = fight.bestDps;
+                          if (fight.bestPercent >= this.bestSavagePercent)
+                              this.bestSavagePercent = fight.bestPercent;
+            							break;
+            						case "Kefka":
+            							break;
+            						case "God Kefka":
+            							if (fight.bestDps >= this.bestSavageDps)
+                              this.bestSavageDps = fight.bestDps;
+                          if (fight.bestPercent >= this.bestSavagePercent)
+                              this.bestSavagePercent = fight.bestPercent;
+            							break;
                         default:
                             break;
                     }
@@ -255,11 +253,11 @@ public List<string> GetClearedFights(){
                             cleared.Add("O8S");
                             fightsCleared++;
                             break;
-						case "Byakko":
-							var byakkoReply = $"\n**__Trial__**\nByakko";
-							clearedFightsList.Add(byakkoReply);
-                            cleared.Add("Byakko");
-                            break;
+                				case "Byakko":
+                					   var byakkoReply = $"\n**__Trial__**\nByakko";
+                					   clearedFightsList.Add(byakkoReply);
+                             cleared.Add("Byakko");
+                             break;
                         case "Shinryu":
                             break;
                         case "Bahamut Prime":
@@ -350,9 +348,9 @@ public List<string> GetClearedFights(){
                             cleared.Add("O8S");
                             fightsCleared++;
                             break;
-						case "Byakko":
-							var byakkoReply = $"\n**__Trial__**\n - Byakko {this.GetTopThreeDPS(fight, context)}";
-							clearedFightsList.Add(byakkoReply);
+              					case "Byakko":
+              						  var byakkoReply = $"\n**__Trial__**\n - Byakko {this.GetTopThreeDPS(fight, context)}";
+              						  clearedFightsList.Add(byakkoReply);
                             cleared.Add("Byakko");
                             break;
                         case "Shinryu":

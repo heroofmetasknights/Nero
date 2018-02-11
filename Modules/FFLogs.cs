@@ -16,7 +16,7 @@ namespace Nero
 {
 
     public partial class fflogs : ModuleBase {
-        
+
         public static bool permError = false;
 
         public Dictionary<string, ulong> GetRoles() {
@@ -74,20 +74,20 @@ namespace Nero
                     await user.Result.AddRolesAsync(rolesToAdd);
                 }
 
-                
+
             }
 
-            
+
         }
 
-        
+
         public async Task AssignRolesAsync(Dictionary<string, ulong> roles, Task<IGuildUser> user, Player _player) {
             Console.WriteLine(Server.DoesProfileExist(Context.Guild.Id));
             if (Server.DoesProfileExist(Context.Guild.Id) == false) {
                 return;
             }
             var server = Server.Load(Context.Guild.Id);
-            
+
 
 
             var context = Context;
@@ -118,9 +118,9 @@ namespace Nero
                         shinClear = true;
                     }
                 }
-                
-                
-                
+
+
+
                 if (shinClear == true) {
                     if (!roles.ContainsKey($"cleared-shinryu-ex")) {
                         var gRole = await Context.Guild.CreateRoleAsync($"cleared-shinryu-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
@@ -130,7 +130,7 @@ namespace Nero
                     }
 
                 }
-                
+
                 if (!roles.ContainsKey($"cleared-bahamut-ultimate")) {
                     var gRole = await Context.Guild.CreateRoleAsync($"cleared-bahamut-ultimate", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                     if (clearedFights.Contains("Bahamut")) {
@@ -156,7 +156,7 @@ namespace Nero
                         }
                     }
                 }
-            
+
 
                 //top 10%
                 if (_player.bestSavagePercent >= 90.0 && _player.fightsCleared > 0) { // magic number lol
@@ -169,19 +169,19 @@ namespace Nero
                 }
 
                 //Savage-Job
-                if (savageJobs.Count > 0 && _player.cleared.Contains("O1S") &&
-                _player.cleared.Contains("O2S") && _player.cleared.Contains("O3S") && _player.cleared.Contains("O4S")) {
+                if (savageJobs.Count > 0 && _player.cleared.Contains("O5S") &&
+                _player.cleared.Contains("O6S") && _player.cleared.Contains("O7S") && _player.cleared.Contains("O8S")) {
                     foreach (var job in savageJobs) {
                         if (roles.ContainsKey($"savage%-{job.ToLower()}")) {
                             rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
                         } else {
                             var gRole = await Context.Guild.CreateRoleAsync($"savage%-{job.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
-                        }                        
+                        }
                     }
                 }
 
-            
+
 
                 if (_player.jobs.Count == 0)
                 {
@@ -218,12 +218,12 @@ namespace Nero
                     }
                 }
             }
-            
+
             if (rolesToAdd.Count > 0) {
-                
-                if (server.useRoles == true) 
+
+                if (server.useRoles == true)
                     await user.Result.AddRolesAsync(rolesToAdd);
-                
+
             }
         }
 
@@ -259,7 +259,7 @@ namespace Nero
                 await msg.DeleteAsync();
                 permError = false;
             }
-            
+
         }
 
         public async Task GetParse(string server, [Remainder] string character, ulong userID) {
@@ -287,7 +287,7 @@ namespace Nero
                 string responseBody = await client.GetStringAsync(url);
                 string trialResponseBody = await client.GetStringAsync(trialUrl);
                 string ultimateResponseBody = await client.GetStringAsync(ultimateUrl);
-                 
+
                 var parses = JsonConvert.DeserializeObject<List<Nero.Parses>>(responseBody);
                 var trialParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(trialResponseBody);
                 var ultimateParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(ultimateResponseBody);
@@ -312,11 +312,11 @@ namespace Nero
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
                             bestDps = spec.best_persecondamount;
-                        
-                        if (spec.best_historical_percent >= bestPercent) 
+
+                        if (spec.best_historical_percent >= bestPercent)
                             bestPercent = spec.best_historical_percent;
-                        
-                        
+
+
 
                         specAmount++;
                         }
@@ -324,7 +324,7 @@ namespace Nero
                     player.AddFight(cleared, parse.kill, specAmount, specs, parse.name, bestDps, bestPercent);
                     bestPercent = 0.0;
                     bestDps = 0.0;
-                    
+
                 }
 
                 //ulong ffxivrecruiterID = 142476055482073089;
@@ -333,7 +333,7 @@ namespace Nero
                 //if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID) {
                     await AssignRolesAsync(roles, user, player);
                 //}
-                
+
 
             }
             catch (HttpRequestException e)
@@ -367,13 +367,13 @@ namespace Nero
                 string responseBody = await client.GetStringAsync(url);
                 string trialResponseBody = await client.GetStringAsync(trialUrl);
                 string ultimateResponseBody = await client.GetStringAsync(ultimateUrl);
-                 
+
                 var parses = JsonConvert.DeserializeObject<List<Nero.Parses>>(responseBody);
                 var trialParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(trialResponseBody);
                 var ultimateParses = JsonConvert.DeserializeObject<List<Nero.Parses>>(ultimateResponseBody);
                 parses.AddRange(trialParses);
                 parses.AddRange(ultimateParses);
-                
+
 
                 // instantiate best% and bestdps
                 double bestPercent = 0.0;
@@ -393,11 +393,11 @@ namespace Nero
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
                             bestDps = spec.best_persecondamount;
-                        
-                        if (spec.best_historical_percent >= bestPercent) 
+
+                        if (spec.best_historical_percent >= bestPercent)
                             bestPercent = spec.best_historical_percent;
-                        
-                        
+
+
 
                         specAmount++;
                         }
@@ -405,7 +405,7 @@ namespace Nero
                     player.AddFight(cleared, parse.kill, specAmount, specs, parse.name, bestDps, bestPercent);
                     bestPercent = 0.0;
                     bestDps = 0.0;
-                    
+
                 }
 
                 //ulong ffxivrecruiterID = 142476055482073089;
@@ -414,21 +414,21 @@ namespace Nero
                 //if (Context.Guild.Id == ffxivrecruiterID || Context.Guild.Id == testhouseID) {
                     //await AssignRolesAsync(roles, user, player);
                 //}
-                
+
                 return player;
             }
             catch (HttpRequestException e)
             {
                 Console.WriteLine("\nException caught");
                 Console.WriteLine($"Message: {e.Message}");
-                
+
             }
             client.Dispose();
             return null;
         }
-        
-        
-        
+
+
+
         [Command("view")]
         [Alias("v")]
         public async Task ViewProfile() {
@@ -438,7 +438,7 @@ namespace Nero
                 await UpdateProfile(Context.User);
                 await SendProfile(Context.User.Id);
             }
-            
+
         }
 
 
@@ -464,7 +464,7 @@ namespace Nero
                     await SendProfileNoXIVDB(0);
                     return;
                 }
-            } 
+            }
 
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
@@ -473,21 +473,21 @@ namespace Nero
                     await SendProfileNoXIVDB(0);
                     return;
                 }
-            } 
+            }
 
             Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
             player.GetClearedFights();
             var client = HTTPHelpers.NewClient();
 
-            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);
             var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
-            
+
             var raidJobs = "";
             foreach(var job in player.jobs) {
                 if(raidJobs.Contains(job.name) == false) {
-                    raidJobs += $" - **{job.name}**\n" + 
+                    raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
                 }
             }
 
@@ -504,21 +504,21 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(Context)) {
-                if(clear.ToLower().Contains("shinryu")){
+                if(clear.ToLower().Contains("byakko")){
                     clears += $" - {clear}\n";
                 }
             }
 
-            
 
-            var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
-            $"__**Raid Jobs**__\n" + 
-            $"{raidJobs}\n" + 
-            $"__**Clears**__\n" + 
-            $"{clears}\n" + 
-            $""; //+ 
-            //$"__**Jobs**__\n" + 
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"__**Raid Jobs**__\n" +
+            $"{raidJobs}\n" +
+            $"__**Clears**__\n" +
+            $"{clears}\n" +
+            $""; //+
+            //$"__**Jobs**__\n" +
             //$"{jobs}";
 
 
@@ -559,20 +559,20 @@ namespace Nero
                 return;
             }
             var player = Player.Load(Id);
-            
+
             var raidJobs = "";
             foreach(var job in player.jobs) {
                 if(raidJobs.Contains(job.name) == false) {
-                    raidJobs += $" - **{job.name}**\n" + 
+                    raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
                 }
-                
+
             }
 
 
 
-            
+
 
             var clears = "";
 
@@ -584,16 +584,16 @@ namespace Nero
                 }
             }
 
-            
 
-            var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
-            $"__**Raid Jobs**__\n" + 
-            $"{raidJobs}\n" + 
-            $"__**Savage**__\n" + 
-            $"{clears}\n" + 
-            $""; //+ 
-            //$"__**Jobs**__\n" + 
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"__**Raid Jobs**__\n" +
+            $"{raidJobs}\n" +
+            $"__**Savage**__\n" +
+            $"{clears}\n" +
+            $""; //+
+            //$"__**Jobs**__\n" +
             //$"{jobs}";
 
 
@@ -608,7 +608,7 @@ namespace Nero
 
 
             await ReplyAsync("", embed: embed);
-            
+
         }
 
         public async Task SendProfile(ulong Id) {
@@ -626,7 +626,7 @@ namespace Nero
                     await SendProfileNoXIVDB(Id);
                     return;
                 }
-            } 
+            }
 
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
@@ -635,25 +635,25 @@ namespace Nero
                     await SendProfileNoXIVDB(Id);
                     return;
                 }
-            } 
-            
-            
+            }
+
+
 
             Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
 
             var client = HTTPHelpers.NewClient();
 
-            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);
             var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
-            
+
             var raidJobs = "";
             foreach(var job in player.jobs) {
                 if(raidJobs.Contains(job.name) == false) {
-                    raidJobs += $" - **{job.name}**\n" + 
+                    raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
                 }
-                
+
             }
 
 
@@ -676,16 +676,16 @@ namespace Nero
                 }
             }
 
-            
 
-            var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
-            $"__**Raid Jobs**__\n" + 
-            $"{raidJobs}\n" + 
-            $"__**Clears**__\n" + 
-            $"{clears}\n" + 
-            $""; //+ 
-            //$"__**Jobs**__\n" + 
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"__**Raid Jobs**__\n" +
+            $"{raidJobs}\n" +
+            $"__**Clears**__\n" +
+            $"{clears}\n" +
+            $""; //+
+            //$"__**Jobs**__\n" +
             //$"{jobs}";
 
 
@@ -703,7 +703,7 @@ namespace Nero
 
 
             await ReplyAsync("", embed: embed);
-            
+
         }
 
         public async Task SendProfileDM(ulong Id) {
@@ -722,7 +722,7 @@ namespace Nero
                     //await SendProfileNoXIVDB(Id);
                     throw new Exception("Invalid XIVDB api url");
                 }
-            } 
+            }
 
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
@@ -731,23 +731,23 @@ namespace Nero
                     //await SendProfileNoXIVDB(Id);
                     throw new Exception("Invalid XIVDB api url");
                 }
-            } 
+            }
 
             Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
 
             var client = HTTPHelpers.NewClient();
 
-            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);
             var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
-            
+
             var raidJobs = "";
             foreach(var job in player.jobs) {
                 if(raidJobs.Contains(job.name) == false) {
-                    raidJobs += $" - **{job.name}**\n" + 
+                    raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
                 }
-                
+
             }
 
 
@@ -770,16 +770,16 @@ namespace Nero
                 }
             }
 
-            
 
-            var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
-            $"__**Raid Jobs**__\n" + 
-            $"{raidJobs}\n" + 
-            $"__**Clears**__\n" + 
-            $"{clears}\n" + 
-            $""; //+ 
-            //$"__**Jobs**__\n" + 
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"__**Raid Jobs**__\n" +
+            $"{raidJobs}\n" +
+            $"__**Clears**__\n" +
+            $"{clears}\n" +
+            $""; //+
+            //$"__**Jobs**__\n" +
             //$"{jobs}";
 
 
@@ -795,8 +795,8 @@ namespace Nero
             .WithDescription(reply)
             .Build();
 
-            
-            await Context.User.SendMessageAsync("", embed: embed);  
+
+            await Context.User.SendMessageAsync("", embed: embed);
         }
 
         public async Task<Embed> SendProfileReply(ulong Id) {
@@ -814,7 +814,7 @@ namespace Nero
                     //await SendProfileNoXIVDB(Id);
                     throw new Exception("Invalid XIVDB api url");
                 }
-            } 
+            }
 
             if (player.xivdbURL_API == "" || player.xivdbURL_API.Length == 0 || player.xivdbURL_API == null) {
                 player.xivdbURL_API = GetXivDB(player.playerName, player.world, true).Result.ToString();
@@ -823,23 +823,23 @@ namespace Nero
                     //await SendProfileNoXIVDB(Id);
                     throw new Exception("Invalid XIVDB api url");
                 }
-            } 
+            }
 
             Console.WriteLine($"xivdb: {player.xivdbURL}\napi: {player.xivdbURL_API}");
 
             var client = HTTPHelpers.NewClient();
 
-            string responseBody = await client.GetStringAsync(player.xivdbURL_API);         
+            string responseBody = await client.GetStringAsync(player.xivdbURL_API);
             var xivdbCharacter = JsonConvert.DeserializeObject<XivDB.XIVDBCharacter>(responseBody);
-            
+
             var raidJobs = "";
             foreach(var job in player.jobs) {
                 if(raidJobs.Contains(job.name) == false) {
-                    raidJobs += $" - **{job.name}**\n" + 
+                    raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n"; 
+                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
                 }
-                
+
             }
 
 
@@ -862,16 +862,16 @@ namespace Nero
                 }
             }
 
-            
 
-            var reply = $"**Best DPS:** {player.bestDps}\n" + 
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" + 
-            $"__**Raid Jobs**__\n" + 
-            $"{raidJobs}\n" + 
-            $"__**Clears**__\n" + 
-            $"{clears}\n" + 
-            $""; //+ 
-            //$"__**Jobs**__\n" + 
+
+            var reply = $"**Best DPS:** {player.bestDps}\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"__**Raid Jobs**__\n" +
+            $"{raidJobs}\n" +
+            $"__**Clears**__\n" +
+            $"{clears}\n" +
+            $""; //+
+            //$"__**Jobs**__\n" +
             //$"{jobs}";
 
 
@@ -889,23 +889,23 @@ namespace Nero
 
 
             return embed;
-            
+
         }
-        
+
         public async Task<string> GetXivDB(string name, string world, bool api) {
             if (api == true) {
                 var url = new Uri($"https://api.xivdb.com/search?one=characters&string={name}&pretty=1");
             var client = HTTPHelpers.NewClient();
 
-            string responseBody = await client.GetStringAsync(url);         
+            string responseBody = await client.GetStringAsync(url);
             var xivdbCharacters = JsonConvert.DeserializeObject<CharacterSearch>(responseBody);
-            
+
             var results = from charResult in xivdbCharacters.characters.results
             where charResult.name.ToLower() == name.ToLower() && charResult.server == world
             select charResult;
 
             string playerLink = "";
-            
+
             if (results.Count() > 0) {
                 playerLink = results.First().url_api;
             } else {
@@ -921,9 +921,9 @@ namespace Nero
             //http://api.xivdb.com/character/6248857/knightin+rustyarmour/excalibur
 
 
-            string responseBody = await client.GetStringAsync(url);         
+            string responseBody = await client.GetStringAsync(url);
             var xivdbCharacters = JsonConvert.DeserializeObject<CharacterSearch>(responseBody);
-            
+
             var results = from charResult in xivdbCharacters.characters.results
             where charResult.name.ToLower() == name.ToLower() && charResult.server == world
             select charResult;
