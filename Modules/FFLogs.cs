@@ -505,7 +505,7 @@ namespace Nero
 
             foreach (var clear in player.GetClearedFights(Context)) {
                 //if(clear.ToLower().Contains("byakko")){
-                    clears += $" - {clear}\n {this.GetTopThreeDPS(clear, Context)}";
+                    clears += $" - {clear}\n";
                 //}
             }
 
@@ -763,7 +763,7 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                if(!clear.ToLower().Contains("shinryu")){
+                if(!clear.ToLower().Contains("byakko")){
                     clears += $" - {clear}\n";
                 } else {
                     clears += $"\n{clear}\n";
@@ -855,7 +855,7 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(context)) {
-                if(!clear.ToLower().Contains("shinryu")){
+                if(!clear.ToLower().Contains("byakko")){
                     clears += $" - {clear}\n";
                 } else {
                     clears += $"\n{clear}\n";
