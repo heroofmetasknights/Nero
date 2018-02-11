@@ -504,7 +504,7 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(Context)) {
-                if(clear.ToLower().Contains("Phantom Train")){
+                if(clear.ToLower().Contains("phantom train")){
                     clears += $" - {clear}\n";
                 }
             }
