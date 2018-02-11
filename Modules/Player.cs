@@ -349,7 +349,7 @@ public List<string> GetClearedFights(){
                             fightsCleared++;
                             break;
 						case "Byakko":
-							var byakkoReply = $"\n**__Trial__**\nByakko {this.GetTopThreeDPS(fight, context)}";
+							var byakkoReply = $"\n**__Trial__**\n - Byakko {this.GetTopThreeDPS(fight, context)}";
 							clearedFightsList.Add(byakkoReply);
                             cleared.Add("Byakko");
                             break;
