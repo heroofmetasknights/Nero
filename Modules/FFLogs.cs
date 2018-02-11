@@ -389,7 +389,7 @@ namespace Nero
 
                     foreach(var spec in parse.specs) {
                         if (parse.name != "Kefka") {
-                            //Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
+                            Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
                             bestDps = spec.best_persecondamount;
