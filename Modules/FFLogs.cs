@@ -231,7 +231,7 @@ namespace Nero
         [Command("assign")]
         [Alias("a")]
         public async Task assign(string server, [Remainder] string character) {
-            var msg = await ReplyAsync("Working...");
+            var msg = await ReplyAsync(":robot: Beep boop, I'm working, please be patient...");
 
             await GetParse(server, character, Context.User.Id);
 
@@ -247,7 +247,7 @@ namespace Nero
 
         [Command("add profile")]
         public async Task AddProfile(string server, [Remainder] string character) {
-            var msg = await ReplyAsync("Working...");
+            var msg = await ReplyAsync(":robot: Beep boop, I'm working, please be patient...");
 
             await GetParse(server, character, Context.User.Id);
 
