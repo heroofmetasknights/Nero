@@ -75,11 +75,8 @@ namespace Nero {
                         case "Alte Roite":
                         case "Catastrophe":
                         case "Halicarnassus":
-                            break;
                         case "Exdeath":
-                            break;
                         case "Neo Exdeath":
-                            break;
             						case "Phantom Train":
             						case "Demon Chadarnook":
             						case "Guardian":
