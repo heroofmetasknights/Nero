@@ -504,7 +504,7 @@ namespace Nero
             var clears = "";
 
             foreach (var clear in player.GetClearedFights(Context)) {
-                if(!clear.ToLower().Contains("byakko")){
+                if(clear.ToLower().Contains("byakko")){
                     clears += $" - {clear}\n";
                 }
             }
