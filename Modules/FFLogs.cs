@@ -95,7 +95,7 @@ namespace Nero
             var savageJobs = _player.GetSavageJobs();
             var rolesToAdd = new List<IRole>();
             var rand = new Random();
-            int savageFightCount = 4;
+            int savageFightCount = 8;
 
             if (server.useRoles == true) {
                 var bot = await Context.Guild.GetCurrentUserAsync();
@@ -307,7 +307,7 @@ namespace Nero
                     List<job> specs = new List<job>();
 
                     foreach(var spec in parse.specs) {
-                        if (parse.name != "Exdeath") {
+                        if (parse.name != "Kefka") {
                             //Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)
@@ -388,7 +388,7 @@ namespace Nero
                     List<job> specs = new List<job>();
 
                     foreach(var spec in parse.specs) {
-                        if (parse.name != "Exdeath") {
+                        if (parse.name != "Kefka") {
                             //Console.WriteLine($"parse fight: {parse.name}, spec name: {spec.spec}, spec hist %: {spec.best_historical_percent}, spec dps: {spec.best_persecondamount}");
                         specs.Add(new job(spec.spec, spec.best_historical_percent, spec.best_persecondamount));
                         if (spec.best_persecondamount >= bestDps)

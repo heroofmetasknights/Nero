@@ -59,7 +59,7 @@ namespace Nero {
             this.bestPercent = 0.0;
             Console.WriteLine("");
             foreach (var fight in fights) {
-                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime") {
+                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko") {
                     this.bestPercent += fight.bestPercent;
                     Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps) {
@@ -73,21 +73,29 @@ namespace Nero {
                         case "Alte Roite":
                         case "Catastrophe":
                         case "Halicarnassus":
-                            if (fight.bestDps >= this.bestSavageDps)
-                                this.bestSavageDps = fight.bestDps;
-                            
-                            if (fight.bestPercent >= this.bestSavagePercent)
-                                this.bestSavagePercent = fight.bestPercent;
                             break;
                         case "Exdeath":
                             break;
                         case "Neo Exdeath":
-                            if (fight.bestDps >= this.bestSavageDps)
+                            break;
+						case "Phantom Train":
+						case "Demon Chadarnook":
+						case "Guardian":
+							if (fight.bestDps >= this.bestSavageDps)
                                 this.bestSavageDps = fight.bestDps;
-
+                            
                             if (fight.bestPercent >= this.bestSavagePercent)
                                 this.bestSavagePercent = fight.bestPercent;
-                            break;
+							break;
+						case "Kefka":
+							break;
+						case "God Kefka":
+							if (fight.bestDps >= this.bestSavageDps)
+                                this.bestSavageDps = fight.bestDps;
+                            
+                            if (fight.bestPercent >= this.bestSavagePercent)
+                                this.bestSavagePercent = fight.bestPercent;
+							break;
                         default:
                             break;
                     }
@@ -188,7 +196,7 @@ public List<string> GetClearedFights(){
                 foreach (var job in fight.jobs) {
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                            if (fight.fightName == "Phantom Train" || fight.fightName == "Demon Chadarnook" || fight.fightName == "Guardian" || fight.fightName == "God Kefka") {
                                 j.savageP += job.historical_percent;
                             }
                         }
@@ -200,7 +208,7 @@ public List<string> GetClearedFights(){
 
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                            if (fight.fightName == "Phantom Train" || fight.fightName == "Demon Chadarnook" || fight.fightName == "Guardian" || fight.fightName == "God Kefka") {
                                 j.savageP += job.historical_percent;
                             }
                         }
@@ -223,32 +231,36 @@ public List<string> GetClearedFights(){
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
                     switch (fight.fightName)
                     {
-                        case "Alte Roite":
-                            clearedFightsList.Add($"O1S");
-                            cleared.Add("O1S");
+                        case "Phantom Train":
+                            clearedFightsList.Add($"O5S");
+                            cleared.Add("O5S");
                             fightsCleared++;
                             break;
-                        case "Catastrophe":
-                            clearedFightsList.Add($"O2S");
-                            cleared.Add("O2S");
+                        case "Demon Chadarnook":
+                            clearedFightsList.Add($"O6S");
+                            cleared.Add("O6S");
                             fightsCleared++;
                             break;
-                        case "Halicarnassus":
-                            clearedFightsList.Add($"O3S");
-                            cleared.Add("O3S");
+                        case "Guardian":
+                            clearedFightsList.Add($"O7S");
+                            cleared.Add("O7S");
                             fightsCleared++;
                             break;
-                        case "Exdeath":
+                        case "Kefka":
                             break;
-                        case "Neo Exdeath":
-                            clearedFightsList.Add($"O4S");
-                            cleared.Add("O4S");
+                        case "God Kefka":
+                            clearedFightsList.Add($"O8S");
+                            cleared.Add("O8S");
                             fightsCleared++;
+                            break;
+						case "Byakko":
+							var byakkoReply = $"\n**__Trial__**\nByakko";
+							clearedFightsList.Add(byakkoReply);
+                            cleared.Add("Byakko");
                             break;
                         case "Shinryu":
-                            var shinryuReply = $"\n**__Trial__**\nShinryu";
-                            clearedFightsList.Add(shinryuReply);
-                            cleared.Add("Shinryu");
+                           /* clearedFightsList.Add("Shinryu");
+                            cleared.Add("Shinryu");*/
                             break;
                         case "Bahamut Prime":
                             clearedFightsList.Add("Bahamut");
@@ -283,7 +295,7 @@ public List<string> GetClearedFights(){
                 foreach (var job in fight.jobs) {
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                            if (fight.fightName == "Phantom Train" || fight.fightName == "Demon Chadarnook" || fight.fightName == "Guardian" || fight.fightName == "God Kefka") {
                                 j.savageP += job.historical_percent;
                             }
                         }
@@ -295,7 +307,7 @@ public List<string> GetClearedFights(){
 
                     foreach(var j in jobs) {
                         if (j.name == job.name) {
-                            if (fight.fightName == "Alte Roite" || fight.fightName == "Catastrophe" || fight.fightName == "Halicarnassus" || fight.fightName == "Neo Exdeath") {
+                            if (fight.fightName == "Phantom Train" || fight.fightName == "Demon Chadarnook" || fight.fightName == "Guardian" || fight.fightName == "God Kefka") {
                                 j.savageP += job.historical_percent;
                             }
                         }
@@ -316,32 +328,36 @@ public List<string> GetClearedFights(){
             
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
                     switch (fight.fightName) {
-                        case "Alte Roite":
-                            clearedFightsList.Add($"O1S {this.GetTopThreeDPS(fight, context)}");
-                            cleared.Add("O1S");
+                         case "Phantom Train":
+                            clearedFightsList.Add($"O5S");
+                            cleared.Add("O5S");
                             fightsCleared++;
                             break;
-                        case "Catastrophe":
-                            clearedFightsList.Add($"O2S {this.GetTopThreeDPS(fight, context)}");
-                            cleared.Add("O2S");
+                        case "Demon Chadarnook":
+                            clearedFightsList.Add($"O6S");
+                            cleared.Add("O6S");
                             fightsCleared++;
                             break;
-                        case "Halicarnassus":
-                            clearedFightsList.Add($"O3S {this.GetTopThreeDPS(fight, context)}");
-                            cleared.Add("O3S");
+                        case "Guardian":
+                            clearedFightsList.Add($"O7S");
+                            cleared.Add("O7S");
                             fightsCleared++;
                             break;
-                        case "Exdeath":
+                        case "Kefka":
                             break;
-                        case "Neo Exdeath":
-                            clearedFightsList.Add($"O4S {this.GetTopThreeDPS(fight, context)}");
-                            cleared.Add("O4S");
+                        case "God Kefka":
+                            clearedFightsList.Add($"O8S");
+                            cleared.Add("O8S");
                             fightsCleared++;
+                            break;
+						case "Byakko":
+							var byakkoReply = $"\n**__Trial__**\nByakko";
+							clearedFightsList.Add(byakkoReply);
+                            cleared.Add("Byakko");
                             break;
                         case "Shinryu":
-                            var shinryuReply = $"\n**__Trial__**\n  - Shinryu {this.GetTopThreeDPS(fight, context)}";
-                            clearedFightsList.Add(shinryuReply);
-                            cleared.Add("Shinryu");
+                            /*clearedFightsList.Add("Shinryu");
+                            cleared.Add("Shinryu");*/
                             //dont increment fightsCleared
                             break;
                         case "Bahamut Prime":
