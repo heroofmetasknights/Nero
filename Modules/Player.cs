@@ -59,14 +59,16 @@ namespace Nero {
             this.bestPercent = 0.0;
             Console.WriteLine("");
             foreach (var fight in fights) {
-                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko") {
+                /*if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko") */
+                if(fight.fightName == "Phantom Train" && fight.fightName == "Demon Chadarnook" && fight.fightName == "Guardian" && fight.fightName == "Kefka" && fight.fightName == "God Kefka")
+                {
                     this.bestPercent += fight.bestPercent;
                     Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps) {
                         this.bestDps = fight.bestDps;
                     }
                 }
-                
+
 
                 switch (fight.fightName)
                     {
@@ -83,7 +85,7 @@ namespace Nero {
 						case "Guardian":
 							if (fight.bestDps >= this.bestSavageDps)
                                 this.bestSavageDps = fight.bestDps;
-                            
+
                             if (fight.bestPercent >= this.bestSavagePercent)
                                 this.bestSavagePercent = fight.bestPercent;
 							break;
@@ -92,7 +94,7 @@ namespace Nero {
 						case "God Kefka":
 							if (fight.bestDps >= this.bestSavageDps)
                                 this.bestSavageDps = fight.bestDps;
-                            
+
                             if (fight.bestPercent >= this.bestSavagePercent)
                                 this.bestSavagePercent = fight.bestPercent;
 							break;
@@ -101,16 +103,16 @@ namespace Nero {
                     }
             }
 
-            foreach(var job in jobs) { 
+            foreach(var job in jobs) {
                 if (fightsCleared > 0)
                     job.savageP /= fightsCleared;
             }
 
-            
+
             if (fightsCleared > 0) {
                 this.bestPercent /= fightsCleared;
                 var tempPercent = this.bestPercent;
-                this.bestPercent = Math.Min(100, tempPercent); 
+                this.bestPercent = Math.Min(100, tempPercent);
             } else {
                 this.bestPercent = 0.0;
             }
@@ -125,7 +127,7 @@ namespace Nero {
                                 emo.Name.ToLower().Contains("drg") || emo.Name.ToLower().Contains("drk") || emo.Name.ToLower().Contains("mch") ||
                                 emo.Name.ToLower() == "mnk" || emo.Name.ToLower().Contains("nin") || emo.Name.ToLower().Contains("pld") ||
                                 emo.Name.ToLower().Contains("rdm") || emo.Name.ToLower().Contains("sam") || emo.Name.ToLower().Contains("sch") ||
-                                emo.Name.ToLower().Contains("smn") || emo.Name.ToLower().Contains("war") || emo.Name.ToLower().Contains("whm") 
+                                emo.Name.ToLower().Contains("smn") || emo.Name.ToLower().Contains("war") || emo.Name.ToLower().Contains("whm")
                                 select emo;
 
                 var reply = "";
@@ -134,7 +136,7 @@ namespace Nero {
                     var jobsSortedResults = (from job in fight.jobs
                                             orderby job.dps
                                             select job).Reverse().Take(3);
-                    
+
 
                     if (jobsSortedResults.Count() > 0) {
                         foreach (var job in jobsSortedResults) {
@@ -146,7 +148,7 @@ namespace Nero {
                             }
                         }
                     }
-                
+
                     jobsSortedResults = null;
                 } else {
                     var jobsSortedResults = (from job in fight.jobs
@@ -157,8 +159,8 @@ namespace Nero {
                         foreach (var job in jobsSortedResults) {
                             reply += $":{job.short_name}: {job.historical_percent}% ";
                             //Console.WriteLine(reply);
-                            
-                        
+
+
                         }
                     }
                 }
@@ -176,14 +178,14 @@ namespace Nero {
                         foreach (var job in jobsSortedResults) {
                             reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
                             //Console.WriteLine(reply);
-                            
-                        
+
+
                         }
                     }
                     return reply;
                 }
             }
-        
+
 
 
 public List<string> GetClearedFights(){
@@ -201,7 +203,7 @@ public List<string> GetClearedFights(){
                             }
                         }
                     }
-                    
+
                     if (jobnames.Contains(job.name) == false) {
                         jobnames.Add(job.name);
                         jobs.Add(job);
@@ -222,12 +224,12 @@ public List<string> GetClearedFights(){
                                 jb.historical_dps = job.historical_dps;
                             }
 
-                            
+
                         }
                     }
-                    
+
                 }
-            
+
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
                     switch (fight.fightName)
                     {
@@ -298,7 +300,7 @@ public List<string> GetClearedFights(){
                             }
                         }
                     }
-                    
+
                     if (jobnames.Contains(job.name) == false) {
                         jobnames.Add(job.name);
                         jobs.Add(job);
@@ -312,7 +314,7 @@ public List<string> GetClearedFights(){
                     }
                     } else {
                         foreach (var jb in this.jobs) {
-                            if (jb.name == job.name && jb.historical_percent <= job.historical_percent) { 
+                            if (jb.name == job.name && jb.historical_percent <= job.historical_percent) {
                                 jb.historical_percent = job.historical_percent;
                             }
                             if (jb.name == job.name && jb.historical_dps <= job.historical_dps) {
@@ -321,9 +323,9 @@ public List<string> GetClearedFights(){
 
                         }
                     }
-                    
+
                 }
-            
+
             if (fight.cleared == true && clearedFightsList.Contains(fight.fightName) == false) {
                     switch (fight.fightName) {
                          case "Phantom Train":
@@ -369,7 +371,7 @@ public List<string> GetClearedFights(){
                             break;
                     }
 
-                    
+
                 }
 
             }
@@ -426,7 +428,7 @@ public List<string> GetClearedFights(){
             }
         }
 
-        public string ToJson() 
+        public string ToJson()
             => JsonConvert.SerializeObject(this, Formatting.Indented);
 
     }
