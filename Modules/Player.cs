@@ -60,29 +60,15 @@ namespace Nero {
             Console.WriteLine("");
             foreach (var fight in fights) {
                 Console.WriteLine($"Current fight : {fight.fightName}.");
-                if (fight.fightName != "Shinyru")
+                if ()
                 {
-                    if(fight.fightName != "Susano")
-                    {
-                      if(fight.fightName != "Lakshmi")
-                      {
-                        if(fight.fightName != "Bahamut Prime")
-                        {
-                          if(fight.fightName != "Byakko")
-                          {
                             this.bestPercent += fight.bestPercent;
                             Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
-                            if (this.bestDps <= fight.bestDps) {
+                            if (this.bestDps <= fight.bestDps)
+                            {
                                 this.bestDps = fight.bestDps;
                             }
-                          }
-                        }
-                      }
-                    }
-
                 }
-
-
                 switch (fight.fightName)
                     {
             						case "Phantom Train":
@@ -276,7 +262,7 @@ public List<string> GetClearedFights(){
                         case "Lakshmi":
                             break;
                         default:
-                            cleared.Add(fight.fightName);
+                            //cleared.Add(fight.fightName);
                             //fightsCleared++;
                             break;
                     }
@@ -371,7 +357,7 @@ public List<string> GetClearedFights(){
                         case "Lakshmi":
                             break;
                         default:
-                            cleared.Add(fight.fightName);
+                            //cleared.Add(fight.fightName);
                             //fightsCleared++;
                             break;
                     }
