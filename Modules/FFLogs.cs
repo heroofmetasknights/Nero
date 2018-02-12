@@ -110,7 +110,7 @@ namespace Nero
                 if (clearedFights.Count == 0)
                 await ReplyAsync("This player has not cleared any extreme/savage fights");
 
-
+                //Shinryu fight clear
                 var shinryuclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Shinryu"));
                 var shinClear = false;
                 if(shinryuclear != null) {
@@ -157,15 +157,37 @@ namespace Nero
                     }
                 }
 
+                //Byakko extreme clear
+                var byakkoclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Byakko"));
+                var byaClear = false;
+                if(byaClear != null) {
+                    if (byaClear.Contains("Byakko")) {
+                        byaClear = true;
+                    }
+                }
+
+
+
+                if (byaClear == true) {
+                    if (!roles.ContainsKey($"cleared-byakko-ex")) {
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-byakko-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        rolesToAdd.Add(gRole);
+                    }else {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-byakko-ex"]));
+                    }
+
+                }
 
                 //top 10%
-                if (_player.bestSavagePercent >= 95.0 && _player.fightsCleared > 0) { // magic number lol
+                if (_player.bestSavagePercent >= 95.0 && _player.fightsCleared > 0) { // magic number lol (modified at Calcifer's request)
+                  if(_player.bestSavagePercent >= 90.0 &&_player.fightsCleared > 1) { //Calcifer's required 2nd condition
                     if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club")) {
                         rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
                     } else {
                         var gRole = await Context.Guild.CreateRoleAsync($"{_player.dc.ToLower()}-bigdps-club", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                         rolesToAdd.Add(gRole);
                     }
+                  }
                 }
 
                 //Savage-Job
@@ -185,7 +207,7 @@ namespace Nero
 
                 if (_player.jobs.Count == 0)
                 {
-                    await ReplyAsync("No recorded Parses");
+                    await ReplyAsync("No recorded Parses or your parses are hidden on FF Logs.");
                     return;
                 }
                 else
