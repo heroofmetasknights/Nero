@@ -159,7 +159,7 @@ namespace Nero
 
 
                 //top 10%
-                if (_player.bestSavagePercent >= 90.0 && _player.fightsCleared > 0) { // magic number lol
+                if (_player.bestSavagePercent >= 95.0 && _player.fightsCleared > 0) { // magic number lol
                     if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club")) {
                         rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
                     } else {
