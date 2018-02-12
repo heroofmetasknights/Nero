@@ -263,7 +263,7 @@ public List<string> GetClearedFights(){
                             break;
                         default:
                             cleared.Add(fight.fightName);
-                            fightsCleared++;
+                            //fightsCleared++;
                             break;
                     }
 
