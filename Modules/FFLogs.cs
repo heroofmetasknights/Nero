@@ -161,7 +161,7 @@ namespace Nero
                 var byakkoclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Byakko"));
                 var byaClear = false;
                 if(byaClear != null) {
-                    if (byaClear.Contains("Byakko")) {
+                    if (byakkoclear.Contains("Byakko")) {
                         byaClear = true;
                     }
                 }
