@@ -60,13 +60,26 @@ namespace Nero {
             Console.WriteLine("");
             foreach (var fight in fights) {
                 Console.WriteLine($"Current fight : {fight.fightName}.");
-                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko")
+                if (fight.fightName != "Shinyru")
                 {
-                    this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
-                    if (this.bestDps <= fight.bestDps) {
-                        this.bestDps = fight.bestDps;
+                    if(fight.fightName != "Susano")
+                    {
+                      if(fight.fightName != "Lakshmi")
+                      {
+                        if(fight.fightName != "Bahamut Prime")
+                        {
+                          if(fight.fightName != "Byakko")
+                          {
+                            this.bestPercent += fight.bestPercent;
+                            Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                            if (this.bestDps <= fight.bestDps) {
+                                this.bestDps = fight.bestDps;
+                            }
+                          }
+                        }
+                      }
                     }
+
                 }
 
 
