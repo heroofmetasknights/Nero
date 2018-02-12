@@ -59,7 +59,7 @@ namespace Nero {
             this.bestPercent = 0.0;
             Console.WriteLine("");
             foreach (var fight in fights) {
-                Console.Write($"Current fight : {fight.fightName}");
+                Console.Write($"Current fight : {fight.fightName}\n");
                 if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko")
                 {
                     this.bestPercent += fight.bestPercent;
