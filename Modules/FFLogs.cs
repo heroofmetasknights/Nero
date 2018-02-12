@@ -542,7 +542,7 @@ namespace Nero
             $""; //+
             //$"__**Jobs**__\n" +
             //$"{jobs}";
-
+            Console.WriteLine(reply);
 
 
             var embed = new EmbedBuilder()
@@ -617,7 +617,7 @@ namespace Nero
             $""; //+
             //$"__**Jobs**__\n" +
             //$"{jobs}";
-
+            Console.WriteLine(reply);
 
 
             var embed = new EmbedBuilder()
@@ -709,7 +709,7 @@ namespace Nero
             $""; //+
             //$"__**Jobs**__\n" +
             //$"{jobs}";
-
+            Console.WriteLine(reply);
 
 
             var embed = new EmbedBuilder()
@@ -803,6 +803,7 @@ namespace Nero
             $""; //+
             //$"__**Jobs**__\n" +
             //$"{jobs}";
+            Console.WriteLine(reply);
 
 
 
@@ -895,7 +896,8 @@ namespace Nero
             $""; //+
             //$"__**Jobs**__\n" +
             //$"{jobs}";
-
+            Console.WriteLine(reply);
+            
 
 
             var embed = new EmbedBuilder()
