@@ -15,7 +15,7 @@ ______
 # Important Commands
 
 * `!n help`: Displays all commands available from nero along with explanations
-* `!n add profile` `server` `character name`: Nero will fetch your fflogs data and create your profile!
+* `!n assign` `server` `character name`: Nero will fetch your fflogs data and create your profile!
 * `!n view`: Show your profile to the world!
 * `!n view` `@mention`: Look at another discord users profile
 * `!n view` `server`, `character name`: Look at the fflogs data of someone who hasn't yet created a profile
