@@ -110,7 +110,7 @@ namespace Nero
                 if (clearedFights.Count == 0)
                 await ReplyAsync("This player has not cleared any extreme/savage fights");
 
-                //Shinryu fight clear
+                /* //Shinryu fight clear
                 var shinryuclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Shinryu"));
                 var shinClear = false;
                 if(shinryuclear != null) {
@@ -140,7 +140,7 @@ namespace Nero
                     if (clearedFights.Contains("Bahamut")) {
                         rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-bahamut-ultimate"]));
                     }
-                }
+                } */
 
 
                 // Savage
