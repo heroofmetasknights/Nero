@@ -75,7 +75,7 @@ namespace Nero {
                 {
                   case "Phantom Train":
                     this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    //Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps)
                     {
                         this.bestDps = fight.bestDps;
@@ -83,7 +83,7 @@ namespace Nero {
                     break;
                   case "Demon Chadarnook":
                     this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    //Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps)
                     {
                         this.bestDps = fight.bestDps;
@@ -91,7 +91,7 @@ namespace Nero {
                     break;
                   case "Guardian":
                     this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    //Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps)
                     {
                         this.bestDps = fight.bestDps;
@@ -99,7 +99,7 @@ namespace Nero {
                     break;
                   case "Kefka":
                     this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    //Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps)
                     {
                         this.bestDps = fight.bestDps;
@@ -107,7 +107,7 @@ namespace Nero {
                     break;
                   case "God Kefka":
                     this.bestPercent += fight.bestPercent;
-                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    //Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
                     if (this.bestDps <= fight.bestDps)
                     {
                         this.bestDps = fight.bestDps;
