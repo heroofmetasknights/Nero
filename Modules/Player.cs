@@ -61,14 +61,52 @@ namespace Nero {
             foreach (var fight in fights) {
                 Console.WriteLine($"Current fight : {fight.fightName}.\n\n");
                 //TODO : Maybe replace this big if by a switch/case block to simplify the code?
-                if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko")
+                /*if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko")
+                  {
+                         this.bestPercent += fight.bestPercent;
+                         Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                         if (this.bestDps <= fight.bestDps)
+                         {
+                             this.bestDps = fight.bestDps;
+                         }
+                  }
+                */
+                switch(fight.fightName)
                 {
-                            this.bestPercent += fight.bestPercent;
-                            Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
-                            if (this.bestDps <= fight.bestDps)
-                            {
-                                this.bestDps = fight.bestDps;
-                            }
+                  case "Phantom Train":
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps)
+                    {
+                        this.bestDps = fight.bestDps;
+                    }
+                    break;
+                  case "Demon Chadarnook":
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps)
+                    {
+                        this.bestDps = fight.bestDps;
+                    }
+                    break;
+                  case "Guardian":
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps)
+                    {
+                        this.bestDps = fight.bestDps;
+                    }
+                    break;
+                  case "God Kefka":
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps)
+                    {
+                        this.bestDps = fight.bestDps;
+                    }
+                    break;
+                  default:
+                    break;
                 }
                 switch (fight.fightName)
                     {
