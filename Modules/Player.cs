@@ -60,6 +60,7 @@ namespace Nero {
             Console.WriteLine("");
             foreach (var fight in fights) {
                 Console.WriteLine($"Current fight : {fight.fightName}.\n\n");
+                //TODO : Maybe replace this big if by a switch/case block to simplify the code?
                 if (fight.fightName != "Shinyru" && fight.fightName != "Susano" && fight.fightName != "Lakshmi" && fight.fightName != "Bahamut Prime" && fight.fightName != "Byakko")
                 {
                             this.bestPercent += fight.bestPercent;
