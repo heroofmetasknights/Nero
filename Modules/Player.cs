@@ -97,6 +97,14 @@ namespace Nero {
                         this.bestDps = fight.bestDps;
                     }
                     break;
+                  case "Kefka":
+                    this.bestPercent += fight.bestPercent;
+                    Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
+                    if (this.bestDps <= fight.bestDps)
+                    {
+                        this.bestDps = fight.bestDps;
+                    }
+                    break;
                   case "God Kefka":
                     this.bestPercent += fight.bestPercent;
                     Console.Write($"fight: {fight.fightName} fight %: {fight.bestPercent}% | ");
