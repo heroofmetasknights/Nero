@@ -82,7 +82,7 @@ Nero tries to streamline finding a new static thanks to the ability to search fo
 
 ____
 
-# Required Privledges & Explanations
+# Required Privileges & Explanations
 
 Nero requires the following privledges to work properly
 
