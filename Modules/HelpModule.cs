@@ -47,7 +47,7 @@ namespace Manderville.Modules {
                 $"Please send all feature suggestions and bot problems to:" +
                 $"{application.Owner.Mention}.\n" +
                 $"Donate to keep the bot alive and contribute to future development:\n" +
-                $"paypal.me/NeroBot";
+                $"http://paypal.me/NeroBot";
 
 
             var embed = new EmbedBuilder()
