@@ -15,7 +15,7 @@ namespace Manderville.Modules {
 			_service = service;
 		}
 
-       
+
 
         [Command("help")]
         [Alias("h")]
@@ -23,17 +23,17 @@ namespace Manderville.Modules {
         public async Task HelpAsync() {
             var application = await Context.Client.GetApplicationInfoAsync();
             string reply = $"__**Player Commands**__\n" +
-                $"**A**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" + 
-                $"**V**iew: Views a users profile.\n" + 
-                $"**V**iew `@mention`: view a specified users profile.\n" + 
+                $"**A**ssign `server` `character name`:  Assigns a user roles depending on their fflogs rankings. \n" +
+                $"**V**iew: Views a users profile.\n" +
+                $"**V**iew `@mention`: view a specified users profile.\n" +
                 $"**V**iew `server` `character name`: View a user by server and character name.\n" +
                 "**I**nvite**B**ot: Gives a link to invite nero to your server.\n" +
                 $"__**Static Commands**__\n" +
                 $"**S**tatic **A**pplications: View, approve or deny applications to the static.\n" +
                 $"**S**tatic **C**reate: Launches the static creation wizard. **!!Needs a discord server!!**\n" +
-                $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters.\n" + 
+                $"**S**tatic **F**ilters: View/Edit Static Recruitment Filters.\n" +
                 $"**S**tatic **J**oin: Launches the static join wizard.\n" +
-                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" + 
+                $"**S**tatic **J**oin `Static Name`: Skips the wizard.\n" +
                 $"**S**tatic **K**ick: Launches a prompt to kick a member from a static\n" +
                 $"**S**tatic **L**ist: Lists all recruiting statics - not available for use in DM's.\n" +
                 $"**S**tatic **L**ist `job acronym`: Lists all statics recruiting for that particular job - not available for use in DM's.\n" +
@@ -45,11 +45,11 @@ namespace Manderville.Modules {
                 $"Settings: Lets you view/change server settings.\n" +
                 $"**Contact**\n" +
                 $"Please send all feature suggestions and bot problems to:" +
-                $"{application.Owner.Mention}" +
+                $"{application.Owner.Mention}.\n" +
                 $"Donate to keep the bot alive and contribute to future development:\n" +
                 $"paypal.me/NeroBot";
 
-           
+
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
@@ -80,12 +80,12 @@ namespace Manderville.Modules {
                 Console.WriteLine($"Input: {input}\nCommand: {cmd.Name}\nmatch: {input.ToLower() == cmd.Name.ToLower()}");
                 if (cmd.Remarks != null) {
                     builder.AddField(x => {
-                        
+
                         x.Name = cmd.Module.Name + ": " + string.Join(", ", cmd.Name);
                         x.Value = $"Aliases: `{string.Join(", ", cmd.Aliases)}`\nSummary: {cmd.Summary}\n";
                     });
                 }
-                
+
                 Console.WriteLine("Builder: Field Added");
             }
 
