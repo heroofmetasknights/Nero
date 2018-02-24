@@ -44,8 +44,10 @@ namespace Manderville.Modules {
                 $"Setup: Launches a prompt to resetup your server.\n" +
                 $"Settings: Lets you view/change server settings.\n" +
                 $"**Contact**\n" +
-                $"Please send all feature suggestions and bot problems to:" +
+                $"Please send all feature suggestions to:" +
                 $"<@202862830934818816>.\n" +
+								$"Please send all bot problems to:" +
+								$"{application.Owner.Mention}" +
                 $"Donate to keep the bot alive and contribute to future development:\n" +
                 $"http://paypal.me/NeroBot";
 
