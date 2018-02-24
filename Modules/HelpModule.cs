@@ -47,7 +47,7 @@ namespace Manderville.Modules {
                 $"Please send all feature suggestions to:" +
                 $"<@202862830934818816>.\n" +
 								$"Please send all bot problems to:" +
-								$"{application.Owner.Mention}" +
+								$"{application.Owner.Mention}.\n" +
                 $"Donate to keep the bot alive and contribute to future development:\n" +
                 $"http://paypal.me/NeroBot";
 
