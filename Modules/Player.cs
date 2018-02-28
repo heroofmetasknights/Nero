@@ -174,7 +174,7 @@ namespace Nero {
                         foreach (var job in jobsSortedResults) {
                             foreach (var emote in emoteResults) {
                                 if (job.short_name == emote.Name) {
-                                    reply += $"{emote.ToString()} {job.dps}% ";
+                                    reply += $"{emote.ToString()} {Math.Round(job.dps)}% ";
                                     //Console.WriteLine(reply);
                                 }
                             }
