@@ -37,9 +37,9 @@ ______
 # Role System
 
 Nero's role system works with fflogs data to automatically create and 
-assign relevant roles to each user, for example a bard on gilgamesh who has cleared O1S - O4S with a 95% or higher rating will be assigned the roles `Aether`, `Gilgamesh`, `Bard`, `Savage%-Bard` `Cleared-O1S`, `Cleared-O2S`, `Cleared-O3S`, `Cleared-O4S`, `Aether-Bigdps-Club` & last but not least `DPS`. 
+assign relevant roles to each user, for example a bard on gilgamesh who has cleared O5S - O8S with a 95% or higher rating will be assigned the roles `Aether`, `Gilgamesh`, `Bard`, `Savage%-Bard` `Cleared-O5S`, `Cleared-O6S`, `Cleared-O7S`, `Cleared-O8S`, `Aether-Bigdps-Club` & last but not least `DPS`. 
 
-A Paladin with O1S-O4S cleared who sometimes plays WHM from excalibur with only O1S-O3S cleared would look like this: `Primal`, `Excalibur`, `PLD`, `WHM` `Cleared-O1S`, `Cleared-O2S`, `Cleared-O3S`, `Cleared-O4S`, `Primal-Bigdps-Club`
+A Paladin with O5S-O8S cleared who sometimes plays WHM from excalibur with only O5S-O7S cleared would look like this: `Primal`, `Excalibur`, `PLD`, `WHM` `Cleared-O5S`, `Cleared-O6S`, `Cleared-O7S`, `Cleared-O8S`, `Primal-Bigdps-Club`
 
 
 
@@ -51,7 +51,7 @@ A Paladin with O1S-O4S cleared who sometimes plays WHM from excalibur with only 
 
 `Job`: Your Job(s) Ex: `BARD`, `SAM`, `WHM`. (**Note**: Will only be added if there is fflogs data for you)
 
-`Cleared-fight`: The fight(s) you have cleared according to fflogs. EX: `cleared-lakshmi-ex`, `cleared-O4S`
+`Cleared-fight`: The fight(s) you have cleared according to fflogs. EX: `cleared-lakshmi-ex`, `cleared-O8S`
 
 `Datacenter-Bigdps-Club`: If you have at least a 90th percentile score on any savage fight nero will assign you the Bigdps role for your datacenter. EX: `Primal-Bigdps-Club`
 
