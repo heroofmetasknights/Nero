@@ -1,4 +1,5 @@
 #!/bin/sh
+nullout=/dev/null
 
 echo "Checking prerequisites for Nero : PM2 (for auto relaunch at startup & daemon mode) and Dotnet (to compile and run Nero)."
 
