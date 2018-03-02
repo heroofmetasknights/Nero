@@ -34,7 +34,7 @@ then
     #statements
       bash start.sh
   else
-    rm -rf start.sh
+    rm -rf $HOME/Nero/start.sh
     exit -1
   fi
 fi
