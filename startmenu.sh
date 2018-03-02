@@ -25,15 +25,9 @@ if [ $# -eq 1 ]
 then
   if [ $1 -eq 1 ] #1 = PM2 mode
   then
-      if ${PM2_FOUND}
-      then
         wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
         wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/pm2start.sh
         bash pm2start.sh
-      else
-        wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
-        bash start.sh
-      fi
   elif [ $1 -eq 2 ] #2 = Normal mode
    then
     #statements
