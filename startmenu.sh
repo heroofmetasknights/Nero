@@ -21,17 +21,17 @@ else
   echo "You won't be able to launch Nero using PM2.\n"
 fi
 
-wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
-
 if [ $? -eq 1 ]
 then
   if [$1 -eq "PM2" && ${PM2_FOUND}]
   then
+      wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
       wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/pm2start.sh
       bash pm2start.sh
   elif [ $1 -eq "Normal" ]
    then
     #statements
+      wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
       bash start.sh
   else
     rm -rf $HOME/Nero/start.sh
