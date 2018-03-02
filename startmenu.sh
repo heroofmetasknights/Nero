@@ -34,6 +34,7 @@ then
     #statements
       bash start.sh
   else
+    rm -rf start.sh
     exit -1
   fi
 fi
