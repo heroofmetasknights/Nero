@@ -21,7 +21,7 @@ else
   echo "You won't be able to launch Nero using PM2.\n"
 fi
 
-if [ $? -eq 1 ]
+if [ $# -eq 1 ]
 then
   if [$1 -eq "PM2" && ${PM2_FOUND}]
   then
