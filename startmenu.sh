@@ -23,7 +23,7 @@ fi
 
 if [ $# -eq 1 ]
 then
-  if [$1 -eq 1 && ${PM2_FOUND}] #1 = PM2 mode
+  if [ $1 -eq 1 && ${PM2_FOUND} ] #1 = PM2 mode
   then
       wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/start.sh
       wget -N https://github.com/alink-tothepast/shell-scripts/raw/master/pm2start.sh
