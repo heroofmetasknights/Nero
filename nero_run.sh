@@ -25,8 +25,8 @@ fi
 
 cd $root/Nero
 dotnet restore
-dotnet build --configuration Release
+dotnet build --configuration release
 cd "$root/Nero"
 echo "Running Nero. Please wait."
-dotnet run --configuration Release
+dotnet run --configuration release
 echo "Done"
