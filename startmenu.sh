@@ -1,24 +1,24 @@
 #!/bin/sh
 nullout=/dev/null
 
-echo "Checking prerequisites for Nero : PM2 (for auto relaunch at startup & daemon mode) and Dotnet (to compile and run Nero).\n"
+echo -e "Checking prerequisites for Nero : PM2 (for auto relaunch at startup & daemon mode) and Dotnet (to compile and run Nero).\n"
 
 if hash dotnet 2>$nullout
 then
   DOTNET_FOUND=0
-  echo "Dotnet installed.\n"
+  echo -e "Dotnet installed.\n"
 else
-  echo "Dotnet must be installed before launching Nero.\n"
+  echo -e "Dotnet must be installed before launching Nero.\n"
   exit 1
 fi
 
 if hash pm2 2>$nullout
 then
   PM2_FOUND=0
-  echo "PM2 installed.\n"
+  echo -e "PM2 installed.\n"
 else
-  echo "PM2 wasn't found on your system.\n"
-  echo "You won't be able to launch Nero using PM2.\n"
+  echo -e "PM2 wasn't found on your system.\n"
+  echo -e "You won't be able to launch Nero using PM2.\n"
 fi
 
 if [ $# -eq 1 ]
