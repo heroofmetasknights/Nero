@@ -181,7 +181,6 @@ namespace Nero
                 //top 10%
                 //TODO : Revert this part to 95% Only after Calcifer has made some cleanup in the dpsclub members.
                 if (_player.bestSavagePercent >= 95.0 && _player.fightsCleared > 0) { // magic number lol (modified at Calcifer's request)
-                  if(_player.bestSavagePercent >= 90.0 &&_player.fightsCleared > 1) { //Calcifer's required 2nd condition
                     if (roles.ContainsKey($"{_player.dc.ToLower()}-bigdps-club")) {
                         rolesToAdd.Add(Context.Guild.GetRole(roles[$"{_player.dc.ToLower()}-bigdps-club"]));
                     } else {
@@ -189,7 +188,6 @@ namespace Nero
                         rolesToAdd.Add(gRole);
                     }
                   }
-                }
 
                 //Savage-Job
                 if (savageJobs.Count > 0 && _player.cleared.Contains("O5S") &&
