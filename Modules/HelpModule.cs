@@ -55,7 +55,7 @@ namespace Manderville.Modules {
             var embed = new EmbedBuilder()
                 .WithColor(new Color(250, 140, 73))
                 .WithTitle("Help")
-                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v1.1.0"))
+                .WithFooter(new EmbedFooterBuilder().WithText($"Nero v4.25.0"))
                 .WithDescription(reply)
                 .WithUrl("https://gist.github.com/Infinifrui/43bc37aeb91533699ff748f787e61852")
                 .Build();
@@ -104,7 +104,8 @@ namespace Manderville.Modules {
         [Command("Invite Bot")]
         [Alias("ib")]
         public async Task InviteBot() {
-            await ReplyAsync("https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
+            await ReplyAsync("If you want to invite the original Nero (aka <@202862830934818816>'s version : https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=332176591042117634");
+						await ReplyAsync("If you want to invite this copy of Nero : https://discordapp.com/oauth2/authorize?permissions=2080898303&scope=bot&client_id=396993856366837760");
         }
 
         [Command("guild")]
