@@ -241,6 +241,17 @@ namespace Nero
                                 rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.role.ToLower()]));
                         }
 
+                        // Sub roles
+                        if(!roles.ContainsKey(classjob.subrole.ToLower()))
+                        {
+                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.subrole.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            rolesToAdd.Add(gRole);
+                        }
+                        else
+                        {
+                            if (user.Result.RoleIds.Contains(roles[classjob.subrole.ToLower()]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.subrole.ToLower()]));
+                        }
                     }
                 }
             }
