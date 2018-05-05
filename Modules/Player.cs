@@ -390,7 +390,8 @@ public List<string> GetClearedFights(){
                         case "Shinryu":
                             break;
                         case "Bahamut Prime":
-                            clearedFightsList.Add("Bahamut");
+                            var bahamutReply = $"Bahamut {this.GetTopThreeDPS(fight, context)}";
+                            clearedFightsList.Add(bahamutReply);
                             cleared.Add("Bahamut");
                             break;
                         case "Susano":
