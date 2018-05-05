@@ -147,6 +147,22 @@ namespace Nero
                     }
                 }
 
+                // 4.3x Ultimate Fight (name not known)
+                /*if (!roles.ContainsKey($"cleared-X-ultimate"))
+                {
+                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-X-ultimate", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    if (clearedFights.Contains("X"))
+                    {
+                        rolesToAdd.Add(gRole);
+                    }
+                }
+                else
+                {
+                    if (clearedFights.Contains("X"))
+                    {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-X-ultimate"]));
+                    }
+                }*/
 
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
