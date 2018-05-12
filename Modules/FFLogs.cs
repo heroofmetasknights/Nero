@@ -110,26 +110,7 @@ namespace Nero
                 {
                   await ReplyAsync("This player has not cleared any extreme/savage fights, kupo!");
                 }
-                /* //Shinryu fight clear
-                var shinryuclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Shinryu"));
-                var shinClear = false;
-                if(shinryuclear != null) {
-                    if (shinryuclear.Contains("Shinryu")) {
-                        shinClear = true;
-                    }
-                }
-
-
-
-                if (shinClear == true) {
-                    if (!roles.ContainsKey($"cleared-shinryu-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-shinryu-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
-                        rolesToAdd.Add(gRole);
-                    }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-shinryu-ex"]));
-                    }
-
-                } */
+                
                 // Bahamut Ultimate clear
                 if (!roles.ContainsKey($"cleared-bahamut-ultimate"))
                 {
@@ -146,23 +127,6 @@ namespace Nero
                         rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-bahamut-ultimate"]));
                     }
                 }
-
-                // 4.3x Ultimate Fight (name not known)
-                /*if (!roles.ContainsKey($"cleared-X-ultimate"))
-                {
-                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-X-ultimate", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
-                    if (clearedFights.Contains("X"))
-                    {
-                        rolesToAdd.Add(gRole);
-                    }
-                }
-                else
-                {
-                    if (clearedFights.Contains("X"))
-                    {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-X-ultimate"]));
-                    }
-                }*/
 
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
