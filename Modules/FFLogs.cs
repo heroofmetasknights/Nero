@@ -110,26 +110,7 @@ namespace Nero
                 {
                   await ReplyAsync("This player has not cleared any extreme/savage fights, kupo!");
                 }
-                /* //Shinryu fight clear
-                var shinryuclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Shinryu"));
-                var shinClear = false;
-                if(shinryuclear != null) {
-                    if (shinryuclear.Contains("Shinryu")) {
-                        shinClear = true;
-                    }
-                }
-
-
-
-                if (shinClear == true) {
-                    if (!roles.ContainsKey($"cleared-shinryu-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-shinryu-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
-                        rolesToAdd.Add(gRole);
-                    }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-shinryu-ex"]));
-                    }
-
-                } */
+                
                 // Bahamut Ultimate clear
                 if (!roles.ContainsKey($"cleared-bahamut-ultimate"))
                 {
