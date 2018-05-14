@@ -287,12 +287,13 @@ public List<string> GetClearedFights(){
                             cleared.Add("O8S");
                             fightsCleared++;
                             break;
-                				case "Byakko":
-                					   var byakkoReply = $"\n**__Trial__**\nByakko";
-                					   clearedFightsList.Add(byakkoReply);
-                             cleared.Add("Byakko");
-                             break;
-                        case "Shinryu":
+                        //TODO : Replace all newPrimal with the official ff logs name for the new extreme primal coming in 4.3
+                        case "newPrimal":
+                			var newPrimalReply = $"\n**__Trial__**\newPrimal";
+                			clearedFightsList.Add(newPrimalReply);
+                            cleared.Add("newPrimal");
+                            break;
+                        case "Byakko":
                             break;
                         case "Bahamut Prime":
                             clearedFightsList.Add("Bahamut");
@@ -382,12 +383,13 @@ public List<string> GetClearedFights(){
                             cleared.Add("O8S");
                             fightsCleared++;
                             break;
-              					case "Byakko":
-              						  var byakkoReply = $"\n**__Trial__**\n - Byakko {this.GetTopThreeDPS(fight, context)}";
-              						  clearedFightsList.Add(byakkoReply);
-                            cleared.Add("Byakko");
+                        //TODO : Replace all newPrimal with the official ff logs name for the new extreme primal coming in 4.3
+                        case "newPrimal":
+                            var newPrimalReply = $"\n**__Trial__**\newPrimal {this.GetTopThreeDPS(fight, context)}";
+                            clearedFightsList.Add(newPrimalReply);
+                            cleared.Add("newPrimal");
                             break;
-                        case "Shinryu":
+                        case "Byakko":
                             break;
                         case "Bahamut Prime":
                             var bahamutReply = $"Bahamut {this.GetTopThreeDPS(fight, context)}";
