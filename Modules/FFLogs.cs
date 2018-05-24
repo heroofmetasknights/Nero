@@ -125,24 +125,29 @@ namespace Nero
                     }
                 }
 
-                //New Extreme Primal clear (4.3)
-                //TODO : Replace all newPrimal with the official ff logs name for the new extreme primal coming in 4.3
-                var NewPrimalClear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Byakko"));
-                var npClear = false;
-                if(NewPrimalClear != null) {
-                    if (NewPrimalClear.Contains("newPrimal")) {
-                        npClear = true;
+                //Tsukuyomi extreme
+                var tsukuyomiClear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Tsukuyomi"));
+                var tsukuyomiCleared = false;
+                if (tsukuyomiClear != null)
+                {
+                    if (tsukuyomiClear.Contains("tsukuyomi"))
+                    {
+                        tsukuyomiCleared = true;
                     }
                 }
 
 
 
-                if (npClear == true) {
-                    if (!roles.ContainsKey($"cleared-newPrimal-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-newPrimal-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                if (tsukuyomiCleared == true)
+                {
+                    if (!roles.ContainsKey($"cleared-tsukuyomi-ex"))
+                    {
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-tsukuyomi-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                         rolesToAdd.Add(gRole);
-                    }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-newPrimal-ex"]));
+                    }
+                    else
+                    {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-tsukuyomi-ex"]));
                     }
 
                 }
