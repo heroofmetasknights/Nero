@@ -20,7 +20,7 @@ namespace Nero
         public static bool permError = false;
 
         public Dictionary<string, ulong> GetRoles() {
-            var roles = new Dictionary<string, ulong>();
+            var roles = new Dictionary<string, ulong>(System.StringComparer.CurrentCultureIgnoreCase);
             foreach(var role in Context.Guild.Roles) {
                 if (role.Name.ToLower() != "new role") {
                     if (!roles.ContainsKey(role.Name.ToLower()))
@@ -110,23 +110,6 @@ namespace Nero
                 {
                   await ReplyAsync("This player has not cleared any extreme/savage fights, kupo!");
                 }
-                
-                // Bahamut Ultimate clear
-                if (!roles.ContainsKey($"cleared-bahamut-ultimate"))
-                {
-                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-bahamut-ultimate", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
-                    if (clearedFights.Contains("Bahamut"))
-                    {
-                        rolesToAdd.Add(gRole);
-                    }
-                }
-                else
-                {
-                    if (clearedFights.Contains("Bahamut"))
-                    {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-bahamut-ultimate"]));
-                    }
-                }
 
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
@@ -142,23 +125,29 @@ namespace Nero
                     }
                 }
 
-                //Byakko extreme clear
-                var byakkoclear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Byakko"));
-                var byaClear = false;
-                if(byakkoclear != null) {
-                    if (byakkoclear.Contains("Byakko")) {
-                        byaClear = true;
+                //Tsukuyomi extreme
+                var tsukuyomiClear = clearedFights.FirstOrDefault(stringCheck => stringCheck.Contains("Tsukuyomi"));
+                var tsukuyomiCleared = false;
+                if (tsukuyomiClear != null)
+                {
+                    if (tsukuyomiClear.Contains("tsukuyomi"))
+                    {
+                        tsukuyomiCleared = true;
                     }
                 }
 
 
 
-                if (byaClear == true) {
-                    if (!roles.ContainsKey($"cleared-byakko-ex")) {
-                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-byakko-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                if (tsukuyomiCleared == true)
+                {
+                    if (!roles.ContainsKey($"cleared-tsukuyomi-ex"))
+                    {
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-tsukuyomi-ex", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                         rolesToAdd.Add(gRole);
-                    }else {
-                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-byakko-ex"]));
+                    }
+                    else
+                    {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-tsukuyomi-ex"]));
                     }
 
                 }
@@ -185,10 +174,14 @@ namespace Nero
                 if (savageJobs.Count > 0 && _player.cleared.Contains("O5S") &&
                 _player.cleared.Contains("O6S") && _player.cleared.Contains("O7S") && _player.cleared.Contains("O8S")) {
                     foreach (var job in savageJobs) {
-                        if (roles.ContainsKey($"savage%-{job.ToLower()}")) {
-                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"savage%-{job.ToLower()}"]));
+                        String theSavagePercentJob = $"Savage%-{job}";
+                        theSavagePercentJob = System.Text.RegularExpressions.Regex.Escape(theSavagePercentJob);
+                        Console.WriteLine($"Does {theSavagePercentJob} role exist : {roles.ContainsKey(theSavagePercentJob)}");
+                        if (roles.ContainsKey(theSavagePercentJob)) {
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[theSavagePercentJob]));
                         } else {
-                            var gRole = await Context.Guild.CreateRoleAsync($"savage%-{job.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            Console.WriteLine($"Creating new role: {theSavagePercentJob}");
+                            var gRole = await Context.Guild.CreateRoleAsync(theSavagePercentJob, null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
                         }
                     }
@@ -198,46 +191,60 @@ namespace Nero
 
                 if (_player.jobs.Count == 0)
                 {
-                    await ReplyAsync("No recorded Parses or your parses are hidden on FF Logs.");
+                    await ReplyAsync("Sorry but I can't find any public parses for the character you've specified :frowning:.");
                     return;
                 }
                 else
                 {
                     foreach (var classjob in _player.jobs)
                     {
-
+                        String theJob = $"{classjob.name}";
+                        String theSubRole = $"{classjob.subrole}";
+                        String theRole = $"{classjob.role}";
+                        /*theJob = theJob.ToLower();
+                        theSubRole = theSubRole.ToLower();
+                        theRole = theRole.ToLower();*/
+                        theJob = System.Text.RegularExpressions.Regex.Escape(theJob);
+                        theSubRole = System.Text.RegularExpressions.Regex.Escape(theSubRole);
+                        theRole = System.Text.RegularExpressions.Regex.Escape(theRole);
                         // Job role
-                        if (!roles.ContainsKey(classjob.name.ToLower())) {
-                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.name.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        Console.WriteLine($"Does {theJob} role exist : {roles.ContainsKey(theJob)}");
+                        if (!roles.ContainsKey(theJob)) {
+                            Console.WriteLine($"Adding role : {theJob}");
+                            var gRole = await Context.Guild.CreateRoleAsync(theJob, null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
                         }
                         else {
-                            if (user.Result.RoleIds.Contains(roles[classjob.name.ToLower()]) == false)
-                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.name.ToLower()]));
+                            if (user.Result.RoleIds.Contains(roles[theJob]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[theJob]));
                         }
 
                         //Role role
-                        if (!roles.ContainsKey(classjob.role.ToLower()))
+                        Console.WriteLine($"Does {theRole} role exist : {roles.ContainsKey(theRole)}");
+                        if (!roles.ContainsKey(theRole))
                         {
-                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.role.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            Console.WriteLine($"Adding role : {theRole}");
+                            var gRole = await Context.Guild.CreateRoleAsync(theRole, null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
                         }
                         else
                         {
-                            if (user.Result.RoleIds.Contains(roles[classjob.role.ToLower()]) == false)
-                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.role.ToLower()]));
+                            if (user.Result.RoleIds.Contains(roles[theRole]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[theRole]));
                         }
 
                         // Sub roles
-                        if(!roles.ContainsKey(classjob.subrole.ToLower()))
+                        Console.WriteLine($"Does {theSubRole} role exist : {roles.ContainsKey(theSubRole)}");
+                        if (!roles.ContainsKey(theSubRole))
                         {
-                            var gRole = await Context.Guild.CreateRoleAsync($"{classjob.subrole.ToLower()}", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                            Console.WriteLine($"Adding role : {theSubRole}");
+                            var gRole = await Context.Guild.CreateRoleAsync(theSubRole, null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
                         }
                         else
                         {
-                            if (user.Result.RoleIds.Contains(roles[classjob.subrole.ToLower()]) == false)
-                                rolesToAdd.Add(Context.Guild.GetRole(roles[classjob.subrole.ToLower()]));
+                            if (user.Result.RoleIds.Contains(roles[theSubRole]) == false)
+                                rolesToAdd.Add(Context.Guild.GetRole(roles[theSubRole]));
                         }
                     }
                 }
@@ -261,7 +268,7 @@ namespace Nero
 
             if (permError == false) {
                 await msg.ModifyAsync(x => {
-                    x.Content = "Roles Updated";
+                    x.Content = "Your roles have been successfully updated :smile:.";
                 });
             } else {
                 await msg.DeleteAsync();
@@ -277,7 +284,7 @@ namespace Nero
 
             if (permError == false) {
                 await msg.ModifyAsync(x =>{
-                    x.Content = "Roles Updated";
+                    x.Content = "Your roles have been successfully updated :smile:.";
                 });
             } else {
                 await msg.DeleteAsync();
