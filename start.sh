@@ -1,15 +1,17 @@
 #!/bin/sh
 
 echo ""
-echo "Nero version 4.2"
+echo "Nero bot"
+echo "Release for patch 4.3"
 echo "Rivercity Ransomware was here."
 root=$HOME
 nullout=/dev/null
 
-cd $root/Nero
+cd "$root/Nero"
+echo "Building Nero..."
 dotnet restore
 dotnet build --configuration release
 cd "$root/Nero"
-echo "Running Nero (public version). Please wait."
+echo "Running Nero. Please wait."
 dotnet run --configuration release
 echo "Done"
