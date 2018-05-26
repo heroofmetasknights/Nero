@@ -208,9 +208,7 @@ namespace Nero
                         theSubRole = System.Text.RegularExpressions.Regex.Escape(theSubRole);
                         theRole = System.Text.RegularExpressions.Regex.Escape(theRole);
                         // Job role
-                        Console.WriteLine($"Does {theJob} role exist : {roles.ContainsKey(theJob)}");
                         if (!roles.ContainsKey(theJob)) {
-                            Console.WriteLine($"Adding role : {theJob}");
                             var gRole = await Context.Guild.CreateRoleAsync(theJob, null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
                             rolesToAdd.Add(gRole);
                         }
@@ -220,7 +218,6 @@ namespace Nero
                         }
 
                         //Role role
-                        Console.WriteLine($"Does {theRole} role exist : {roles.ContainsKey(theRole)}");
                         if (!roles.ContainsKey(theRole))
                         {
                             Console.WriteLine($"Adding role : {theRole}");
@@ -234,7 +231,6 @@ namespace Nero
                         }
 
                         // Sub roles
-                        Console.WriteLine($"Does {theSubRole} role exist : {roles.ContainsKey(theSubRole)}");
                         if (!roles.ContainsKey(theSubRole))
                         {
                             Console.WriteLine($"Adding role : {theSubRole}");
