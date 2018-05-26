@@ -8,10 +8,5 @@ root=$HOME
 nullout=/dev/null
 
 cd "$root/Nero"
-echo "Building Nero..."
-dotnet restore
-dotnet build --configuration release
-cd "$root/Nero"
 echo "Running Nero. Please wait."
 dotnet run --configuration release
-echo "Done"
