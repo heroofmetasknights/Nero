@@ -111,6 +111,23 @@ namespace Nero
                   await ReplyAsync("This player has not cleared any extreme/savage fights, kupo!");
                 }
 
+                //  The Weapon's Refrain (Ultimate) clear -- X will be determined by Calcifer
+                if (!roles.ContainsKey($"cleared-X"))
+                {
+                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-X", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    if (clearedFights.Contains("X"))
+                    {
+                        rolesToAdd.Add(gRole);
+                    }
+                }
+                else
+                {
+                    if (clearedFights.Contains("X"))
+                    {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-X"]));
+                    }
+                }
+
                 // Savage
                 for (int i = 1; i<=savageFightCount;i++) {
                     if(!roles.ContainsKey($"cleared-o{i}s")){

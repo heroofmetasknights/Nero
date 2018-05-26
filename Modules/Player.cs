@@ -294,9 +294,12 @@ public List<string> GetClearedFights(){
                             break;
                         case "Byakko":
                             break;
+                        //  The Weapon's Refrain (Ultimate) clear -- X will be determined by Calcifer
+                        case "X":
+                            clearedFightsList.Add("X");
+                            cleared.Add("X");
+                            break;
                         case "Bahamut Prime":
-                            clearedFightsList.Add("Bahamut");
-                            cleared.Add("Bahamut");
                             break;
                         case "Susano":
                             break;
@@ -390,10 +393,10 @@ public List<string> GetClearedFights(){
                             break;
                         case "Byakko":
                             break;
-                        case "Bahamut Prime":
-                            var bahamutReply = $"Bahamut {this.GetTopThreeDPS(fight, context)}";
-                            clearedFightsList.Add(bahamutReply);
-                            cleared.Add("Bahamut");
+                        case "X":
+                            var uwuReply = $"The Weapon's Refrain (Ultimate) {this.GetTopThreeDPS(fight, context)}";
+                            clearedFightsList.Add(uwuReply);
+                            cleared.Add("X");
                             break;
                         case "Susano":
                             break;
