@@ -383,7 +383,7 @@ public List<string> GetClearedFights(){
                             fightsCleared++;
                             break;
                         //TODO : Replace all newPrimal with the official ff logs name for the new extreme primal coming in 4.3
-                        case "tsukuyomi":
+                        case "Tsukuyomi":
                             var tsukuyomiReply = $"\n**__Trial__**\nTsukuyomi {this.GetTopThreeDPS(fight, context)}";
                             clearedFightsList.Add(tsukuyomiReply);
                             cleared.Add("Tsukuyomi");
