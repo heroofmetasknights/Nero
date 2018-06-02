@@ -147,7 +147,7 @@ namespace Nero
                 var tsukuyomiCleared = false;
                 if (tsukuyomiClear != null)
                 {
-                    if (tsukuyomiClear.Contains("tsukuyomi"))
+                    if (tsukuyomiClear.Contains("Tsukuyomi"))
                     {
                         tsukuyomiCleared = true;
                     }
