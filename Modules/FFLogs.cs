@@ -20,8 +20,8 @@ namespace Nero
         public static bool permError = false;
 
         public Dictionary<string, ulong> GetRoles() {
-            var roles = new Dictionary<string, ulong>(System.StringComparer.CurrentCultureIgnoreCase);
-            foreach(var role in Context.Guild.Roles) {
+            var roles = new Dictionary<string, ulong>(StringComparer.CurrentCultureIgnoreCase);
+            foreach (var role in Context.Guild.Roles) {
                 if (role.Name.ToLower() != "new role") {
                     if (!roles.ContainsKey(role.Name.ToLower()))
                         roles.Add(role.Name.ToLower(), role.Id);
@@ -109,6 +109,42 @@ namespace Nero
                 if (clearedFights.Count == 0)
                 {
                   await ReplyAsync("This player has not cleared any extreme/savage fights, kupo!");
+                }
+
+                //  The Weapon's Refrain (Ultimate) clear
+                if (!roles.ContainsKey($"cleared-UwU"))
+                {
+                    var gRole = await Context.Guild.CreateRoleAsync($"cleared-UwU", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                    if (clearedFights.Contains("Ultima"))
+                    {
+                        rolesToAdd.Add(gRole);
+                    }
+                }
+                else
+                {
+                    if (clearedFights.Contains("Ultima"))
+                    {
+                        rolesToAdd.Add(Context.Guild.GetRole(roles["cleared-UwU"]));
+                    }
+                }
+
+                // Savage
+                for (int i = 1; i <= savageFightCount; i++)
+                {
+                    if (!roles.ContainsKey($"cleared-o{i}s"))
+                    {
+                        var gRole = await Context.Guild.CreateRoleAsync($"cleared-o{i}s", null, new Color(rand.Next(33, 250), rand.Next(33, 250), rand.Next(33, 250)));
+                        if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false)
+                            rolesToAdd.Add(gRole);
+
+                    }
+                    else
+                    {
+                        if (clearedFights.Contains($"O{i}S") && user.Result.RoleIds.Contains(roles[$"cleared-o{i}s"]) == false)
+                        {
+                            rolesToAdd.Add(Context.Guild.GetRole(roles[$"cleared-o{i}s"]));
+                        }
+                    }
                 }
 
                 // Savage
