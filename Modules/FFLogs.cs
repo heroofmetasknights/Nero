@@ -20,8 +20,8 @@ namespace Nero
         public static bool permError = false;
 
         public Dictionary<string, ulong> GetRoles() {
-            var roles = new Dictionary<string, ulong>(System.StringComparer.CurrentCultureIgnoreCase);
-            foreach(var role in Context.Guild.Roles) {
+            var roles = new Dictionary<string, ulong>(StringComparer.CurrentCultureIgnoreCase);
+            foreach (var role in Context.Guild.Roles) {
                 if (role.Name.ToLower() != "new role") {
                     if (!roles.ContainsKey(role.Name.ToLower()))
                         roles.Add(role.Name.ToLower(), role.Id);
