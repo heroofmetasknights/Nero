@@ -550,7 +550,7 @@ namespace Nero
                 if(raidJobs.Contains(job.name) == false) {
                     raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
+                        $"    •  Historic Best : {Math.Round(job.historical_percent, 1)}%\n";
                 }
             }
 
@@ -575,7 +575,7 @@ namespace Nero
 
 
             var reply = $"**Best DPS:** {player.bestDps}\n" +
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent, 1)}%\n\n" +
             $"__**Raid Jobs**__\n" +
             $"{raidJobs}\n" +
             $"__**Clears**__\n" +
@@ -628,7 +628,7 @@ namespace Nero
                 if(raidJobs.Contains(job.name) == false) {
                     raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
+                        $"    •  Historic Best : {Math.Round(job.historical_percent, 1)}%\n";
                 }
 
             }
@@ -650,7 +650,7 @@ namespace Nero
 
 
             var reply = $"**Best DPS:** {player.bestDps}\n" +
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent, 1)}%\n\n" +
             $"__**Raid Jobs**__\n" +
             $"{raidJobs}\n" +
             $"__**Savage**__\n" +
@@ -714,7 +714,7 @@ namespace Nero
                 if(raidJobs.Contains(job.name) == false) {
                     raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
+                        $"    •  Historic Best : {Math.Round(job.historical_percent, 1)}%\n";
                 }
 
             }
@@ -742,7 +742,7 @@ namespace Nero
 
 
             var reply = $"**Best DPS:** {player.bestDps}\n" +
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent, 1)}%\n\n" +
             $"__**Raid Jobs**__\n" +
             $"{raidJobs}\n" +
             $"__**Clears**__\n" +
@@ -808,7 +808,7 @@ namespace Nero
                 if(raidJobs.Contains(job.name) == false) {
                     raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
+                        $"    •  Historic Best : {Math.Round(job.historical_percent, 1)}%\n";
                 }
 
             }
@@ -836,7 +836,7 @@ namespace Nero
 
 
             var reply = $"**Best DPS:** {player.bestDps}\n" +
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent, 1)}%\n\n" +
             $"__**Raid Jobs**__\n" +
             $"{raidJobs}\n" +
             $"__**Clears**__\n" +
@@ -901,7 +901,7 @@ namespace Nero
                 if(raidJobs.Contains(job.name) == false) {
                     raidJobs += $" - **{job.name}**\n" +
                         $"    •  Historical DPS: {job.historical_dps}\n" +
-                        $"    •  Historic Best : {Math.Round(job.historical_percent)}%\n";
+                        $"    •  Historic Best : {Math.Round(job.historical_percent, 1)}%\n";
                 }
 
             }
@@ -929,7 +929,7 @@ namespace Nero
 
 
             var reply = $"**Best DPS:** {player.bestDps}\n" +
-            $"**Avg Best %:** {Math.Round(player.bestPercent)}%\n\n" +
+            $"**Avg Best %:** {Math.Round(player.bestPercent, 1)}%\n\n" +
             $"__**Raid Jobs**__\n" +
             $"{raidJobs}\n" +
             $"__**Clears**__\n" +

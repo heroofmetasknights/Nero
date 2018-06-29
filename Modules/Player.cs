@@ -174,7 +174,7 @@ namespace Nero {
                         foreach (var job in jobsSortedResults) {
                             foreach (var emote in emoteResults) {
                                 if (job.short_name == emote.Name) {
-                                    reply += $"{emote.ToString()} {Math.Floor(job.dps)}% ";
+                                    reply += $"{emote.ToString()} {Math.Round(job.dps, 1)}% ";
                                     //Console.WriteLine(reply);
                                 }
                             }
@@ -208,7 +208,7 @@ namespace Nero {
 
                     if (jobsSortedResults.Count() > 0) {
                         foreach (var job in jobsSortedResults) {
-                            reply += $":{job.short_name}: {Math.Floor(job.dps)}% ";
+                            reply += $":{job.short_name}: {Math.Round(job.dps, 1)}% ";
                             //Console.WriteLine(reply);
 
 
